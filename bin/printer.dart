@@ -1,8 +1,8 @@
 // Copyright 2013 by Stefan Matthias Aust
 part of rubyparser;
 
-var indent = "";
-var line = "";
+String indent = "";
+String line = "";
 
 /**
  * Appends [s] to the current line.
@@ -44,7 +44,7 @@ Printer op(String op) {
   };
 }
 
-Map<String, Printer> printMethods = {
+Map<String, Printer> rubyMethods = {
    'assignment': (Map ast) {
      for (Map target in ast['targetList']) {
        pp(target);
@@ -109,7 +109,10 @@ Map<String, Printer> printMethods = {
     }
     if (!params.isEmpty) line=line.slice(0, -1);
     emit(")");
-    ppblock(ast);
+    nl(1);
+    pp(ast['block']);
+    nl(-1);
+    emit("end");
   },
   'param': (Map ast) {
     emit(ast['name']);
@@ -189,8 +192,8 @@ Map<String, Printer> printMethods = {
     for (var when in whens) {
       pp(when);
     }
-    emit("end");
     nl(-1);
+    emit("end");
   },
   'when': (Map ast) {
     emit('when ');
@@ -240,7 +243,10 @@ Map<String, Printer> printMethods = {
       emit(" < ");
       pp(ast['superclass']);
     }
-    ppblock(ast);
+    nl(1);
+    pp(ast['block']);
+    nl(-1);
+    emit("end");
   },
   'attr_accessor': (Map ast) {
     List<String> symbols = ast['list'];
@@ -261,7 +267,10 @@ Map<String, Printer> printMethods = {
     emit(" in ");
     pp(ast['expr']);
     emit(" do ");
-    ppblock(ast);
+    nl(1);
+    pp(ast['block']);
+    nl(-1);
+    emit("end");
   },
   '..': op('..'),
   '...': op('...'),
@@ -293,7 +302,10 @@ Map<String, Printer> printMethods = {
   '<=>': op('<=>'),
   'dowhile': (Map ast) {
     emit('begin');
-    ppblock(ast);
+    nl(1);
+    pp(ast['block']);
+    nl(-1);
+    emit("end");
     emit(" while ");
     pp(ast['expr']);
   },
@@ -304,7 +316,10 @@ Map<String, Printer> printMethods = {
     emit("while ");
     pp(ast['expr']);
     emit(" do");
-    ppblock(ast);
+    nl(1);
+    pp(ast['block']);
+    nl(-1);
+    emit("end");
   },
   'break': (Map ast) => emit("break"),
   'ensure': (Map ast) => emit("ensure"),
@@ -337,23 +352,380 @@ Map<String, Printer> printMethods = {
   'module': (Map ast) {
     emit("module ");
     emit(ast['name']);
-    ppblock(ast);
+    nl(1);
+    pp(ast['block']);
+    nl(-1);
+    emit("end");
   }
 };
 
-void ppblock(Map ast) {
-  nl(1);
-  pp(ast['block']);
-  nl(-1);
-  emit("end");
+void returnblock(ast, {ret:false}) {
+  List<Map> stmts = ast['list'];
+  for (int i = 0; i < stmts.length; i++) {
+    if (ret && i == stmts.length - 1) {
+      emit("return ");
+    }
+    pp(stmts[i]);
+    if (!line.endsWith("}")) {
+      emit(";");
+    }
+    nl();
+  }
 }
+
+String fixname(String name) {
+  return name.replaceFirst("?", "_Q").replaceFirst("!", "_B").replaceFirst("=", "_E");
+}
+
+Map<String, Printer> dartMethods = {
+  'assignment': (Map ast) {
+    List<Map> targetList = ast['targetList'];
+    List<Map> exprList = ast['exprList'];
+    if (exprList.length < targetList.length) {
+      emit("var ");
+      for (Map target in targetList) {
+        pp(target);
+        emit(",");
+      }
+      line=line.slice(0, -1);
+      emit(" = ");
+      for (Map expr in exprList) {
+        pp(expr);
+        emit(",");
+      }
+      line=line.slice(0, -1);
+      return;
+    }
+    for (int i = 0; i < targetList.length; i++) {
+      if (targetList[i]['type'] == 'var') {
+        emit("var ");
+      }
+      pp(targetList[i]);
+      emit(" = ");
+      pp(exprList[i]);
+      if (i == targetList.length - 1) {
+        if (exprList.length > targetList.length) {
+          for (int j = i + 1; j < exprList.length; j++) {
+            emit(",");
+            pp(exprList[j]);
+          }
+        }
+      } else {
+        emit(";");
+        nl();
+      }
+    }
+  },
+  'block': (Map ast) {
+    returnblock(ast);
+  },
+  'globalvar': (Map ast) {
+    emit("\$${ast['name']}");
+  },
+  'doblock': (Map ast) {
+    emit("(");
+    List<Map> params = ast['params'];
+    for (var param in params) {
+      pp(param);
+      emit(",");
+    }
+    if (!params.isEmpty) line=line.slice(0, -1);
+    emit(") {");
+    nl(1);
+    returnblock(ast['block'], ret: true);
+    nl(-1);
+    emit("}");
+  },
+  'var': (Map ast) {
+    emit(fixname(ast['name']));
+  },
+  'instvar': (Map ast) {
+    emit("this." + ast['name']);
+  },
+  'const': (Map ast) {
+    emit(ast['name']);
+  },
+  'def': (Map ast) {
+    if (ast['classname'] != null) {
+      emit(ast['classname']);
+      emit(".");
+    }
+    emit(fixname(ast['name']));
+    emit("(");
+    List<Map> params = ast['params'];
+    for (var param in params) {
+      pp(param);
+      emit(",");
+    }
+    if (!params.isEmpty) line=line.slice(0, -1);
+    emit(") {");
+    nl(1);
+    returnblock(ast['block'], ret: ast['name'] != "initialize");
+    nl(-1);
+    emit("}");
+  },
+  'param': (Map ast) {
+    emit(ast['name']);
+    if (ast['init'] != null) { //TODO
+      emit("=");
+      pp(ast['init']);
+    }
+  },
+  'restparam': (Map ast) { //TODO
+    emit("*");
+    emit(ast['name']);
+  },
+  'if': (Map ast) {
+    emit("if (");
+    pp(ast['expr']);
+    emit(") {");
+    nl(1);
+    returnblock(ast['then']);
+    if (ast['else'] != null) {
+      nl(-1);
+      emit('} else {');
+      nl(1);
+      returnblock(ast['else']);
+    }
+    nl(-1);
+    emit("}");
+  },
+  '==': op('=='),
+  '!=': op('!='),
+  '>=': op('>='),
+  '<=': op('<='),
+  '>': op('>'),
+  '<': op('<'),
+  '||': op('||'),
+  '&&': op('&&'),
+  '<<': op('<<'),
+  '=~': op('=~'), //TODO
+  '+': op('+'),
+  '-': op('-'),
+  '*': op('*'),
+  '/': op('/'),
+  '%': op('%'),
+  'mcall': (Map ast) {
+    bool isNew = ast['name'] == "new";
+    if (ast['expr'] != null) {
+      if (isNew) emit("new ");
+      pp(ast['expr']);
+      if (!isNew) emit(".");
+    }
+    if (!isNew) emit(fixname(ast['name']));
+    emit("(");
+    List<Map> args = ast['args'];
+    for (Map arg in args) {
+      pp(arg);
+      emit(",");
+    }
+    var block = ast['doblock'];
+    if (block != null) {
+      pp(block);
+    } else {
+      if (!args.isEmpty) line=line.slice(0, -1);
+    }
+    emit(")");
+  },
+  '[]': (Map ast) {
+    pp(ast['expr']);
+    emit("[");
+    List<Map> args = ast['args'];
+    for (Map arg in args) {
+      pp(arg);
+      emit(",");
+    }
+    if (!args.isEmpty) line=line.slice(0, -1);
+    emit("]");
+  },
+  'case': (Map ast) {
+    emit("switch (");
+    pp(ast['expr']);
+    emit(") {");
+    nl(1);
+    List<Map> whens = ast['whens'];
+    for (var when in whens) {
+      pp(when);
+    }
+    nl(-1);
+    emit("}");
+  },
+  'when': (Map ast) {
+    for (var expr in ast['exprList']) {
+      emit('case ');
+      pp(expr);
+      emit(":");
+      if (line == 'case true:') {
+        line = "default:";
+      }
+      nl();
+    }
+    nl(1);
+    returnblock(ast['block']);
+    emit("break;");
+    nl();
+    nl(-1);
+  },
+  'lit': (Map ast) {
+    var value = ast['value'];
+    if (value is String) {
+      value = '"${value.replaceAll('"', '\\"')}"';
+    }
+    emit("$value");
+  },
+  'relit': (Map ast) {
+    emit("new RegExp(\"${ast['value']}\")");
+  },
+  '::': (Map ast) {
+    pp(ast['expr']);
+    emit(".");
+    emit(ast['name']);
+  },
+  'array': (Map ast) {
+    emit("[");
+    List<Map> args = ast['args'];
+    for (Map arg in args) {
+      pp(arg);
+      emit(",");
+    }
+    if (!args.isEmpty) line=line.slice(0, -1);
+    emit("]");
+  },
+  'not': (Map ast) {
+    emit("(!");
+    pp(ast['expr']);
+    emit(")");
+  },
+  'class': (Map ast) {
+    emit('class ');
+    emit(ast['name']);
+    if (ast['superclass'] != null) {
+      emit(" extends ");
+      pp(ast['superclass']);
+    }
+    emit(" {");
+    nl(1);
+    returnblock(ast['block']);
+    nl(-1);
+    emit("}");
+  },
+  'attr_accessor': (Map ast) {
+    emit("var ");
+    List<String> symbols = ast['list'];
+    for (var symbol in symbols) {
+      emit("$symbol,");
+    }
+    line=line.slice(0, -1);
+  },
+  'attr_reader': (Map ast) {
+    emit("final ");
+    List<String> symbols = ast['list'];
+    for (var symbol in symbols) {
+      emit("$symbol,");
+    }
+    line=line.slice(0, -1);
+  },
+  'for': (Map ast) {
+    emit("for ");
+    pp(ast['target']);
+    emit(" in ");
+    pp(ast['expr']);
+    emit(" {");
+    nl(1);
+    returnblock(ast['block']);
+    nl(-1);
+    emit("}");
+  },
+  '..': op('..'), //TODO
+  '...': op('...'), //TODO
+  'next': (Map ast) {
+    emit('continue');
+  },
+  '+=': (Map ast) {
+    pp(ast['target']);
+    emit(" += ");
+    pp(ast['expr']);
+  },
+  '-=': (Map ast) {
+    pp(ast['target']);
+    emit(" -= ");
+    pp(ast['expr']);
+  },
+  'alias': (Map ast) {
+  },
+  'self': (Map ast) {
+    emit('this');
+  },
+  'super': (Map ast) {
+    emit('super');
+  },
+  '<=>': op('<=>'), //TODO
+  'dowhile': (Map ast) {
+    emit('do {');
+    nl(1);
+    returnblock(ast['block']);
+    nl(-1);
+    emit("} while (");
+    pp(ast['expr']);
+    emit(")");
+  },
+  'symbol': (Map ast) {
+    emit("'${ast['name']}'");
+  },
+  'while': (Map ast) {
+    emit("while (");
+    pp(ast['expr']);
+    emit(") {");
+    nl(1);
+    returnblock(ast['block']);
+    nl(-1);
+    emit("}");
+  },
+  'break': (Map ast) => emit("break"),
+  'ensure': (Map ast) => emit("ensure"), //TODO
+  'rescue': (Map ast) => emit("rescue"), //TODO
+  'splat': (Map ast) {
+    emit("*");
+    pp(ast['expr']);
+  },
+  '?:': (Map ast) {
+    emit("(");
+    pp(ast['expr']);
+    emit(" ? ");
+    pp(ast['then']);
+    emit(" : ");
+    pp(ast['else']);
+    emit(")");
+  },
+  'return': (Map ast) {
+    emit("return");
+    if (ast['expr'] != null) {
+      emit(" ");
+      pp(ast['expr']);
+    }
+  },
+  'neg': (Map ast) {
+    emit("(-");
+    pp(ast['expr']);
+    emit(")");
+  },
+  'module': (Map ast) { //TODO
+    emit("module ");
+    emit(ast['name']);
+    nl(1);
+    returnblock(ast['block']);
+    nl(-1);
+    emit("end");
+  }
+};
 
 void pp(Map ast) {
   String type = ast['type'];
-  if (printMethods[type] == null) {
+  Printer printer = dartMethods[type];
+  if (printer == null) {
     throw "missing $ast";
   }
-  printMethods[type](ast);
+  printer(ast);
 }
 
 /*
