@@ -2,6 +2,7 @@
 part of rubyparser;
 
 class Parser extends Scanner {
+  List<Set<String>> locals = [new Set()]; // tracks local variables
 
   Parser(String source) : super(source);
 
@@ -133,6 +134,7 @@ class Parser extends Scanner {
   }
 
   Map parseDefStmt() {
+    locals.add(new Set());
     var name = consume(); // name or operator
     var classname = null;
     if (at(".")) {
@@ -147,6 +149,7 @@ class Parser extends Scanner {
       }
     }
     var block = parseBlock();
+    locals.removeLast();
     return {
       'type': 'def',
       'name': name,
@@ -189,6 +192,7 @@ class Parser extends Scanner {
 
   Map parseForStmt() {
     var target = parsePrimary(); // name of any kind
+    trackLocal(target);
     expect("in");
     var expr = parseExpr();
     at("do"); // skip optional do
@@ -227,19 +231,54 @@ class Parser extends Scanner {
         targetList.add(parseSimpleExpr());
       }
       if (at("=")) {
+        targetList = targetList.map((expr) {
+          if (expr['type'] == 'mcall' && expr['expr'] == null && expr['args'].length == 0) {
+            locals.last.add(expr['name']);
+            return {'type': 'var', 'name': expr['name']};
+          } else {
+            return expr;
+          }
+        }).toList();
         List<Map> exprList = parseExprAsList();
         return {'type': 'assignment', 'targetList': targetList, 'exprList': exprList};
       }
       return {'type': 'listexpr', 'list': targetList};
     }
     if (at("=")) {
+      // `expr` might have become an implicit mcall but is simply a new local variable
+      // or if it is an explicit mcall, it's really a setter and not an assignment
+      // or if it is an array access, it's really a setter and not an assignment
+      if (expr['type'] == 'mcall') {
+        if (expr['expr'] == null && expr['args'].length == 0) {
+          expr = {'type': 'var', 'name': expr['name']};
+        } else if (expr['expr'] != null) {
+          expr['name'] += "=";
+          expr['args'].add(parseExpr());
+          return expr;
+        }
+      }
+      trackLocal(expr);
       List<Map> exprList = parseExprAsList();
       return {'type': 'assignment', 'targetList': [expr], 'exprList': exprList};
     }
     if (at("+=")) {
+      if (expr['type'] == 'mcall') {
+        return {
+          'type': 'mcall',
+          'expr': expr['expr'],
+          'name': expr['name'] + "=",
+          'args': [{'type': '+', 'left': expr, 'right': parseExpr()}]};
+      }
       return {'type': '+=', 'target': expr, 'expr': parseExpr()};
     }
     if (at("-=")) {
+      if (expr['type'] == 'mcall') {
+        return {
+          'type': 'mcall',
+          'expr': expr['expr'],
+          'name': expr['name'] + "=",
+          'args': [{'type': '-', 'left': expr, 'right': parseExpr()}]};
+      }
       return {'type': '-=', 'target': expr, 'expr': parseExpr()};
     }
     return expr;
@@ -419,7 +458,7 @@ class Parser extends Scanner {
         expr = {'type': 'mcall', 'expr': expr, 'name': name, 'args': args};
       } else if (at("(")) {
         if (expr['type'] != 'var') {
-          error("expected name but found $expr");
+          error("expected var but found $expr");
         }
         List<Map> list;
         if (!at(")")) {
@@ -431,7 +470,7 @@ class Parser extends Scanner {
         expr = {'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list};
       } else if (isPrimary()) {
         if (expr['type'] != 'var') {
-          error("expected name but found $expr");
+          error("expected var but found $expr");
         }
         List<Map> list = parseExprAsList();
         expr = {'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list};
@@ -441,6 +480,12 @@ class Parser extends Scanner {
         expr = parseDoBlock(expr, "}");
       } else {
         break;
+      }
+    }
+    if (expr['type'] == 'var') {
+      var name = expr['name'];
+      if (!isLocal(name)) {
+        expr = {'type': 'mcall', 'expr': null, 'name': name, 'args': []};
       }
     }
     return expr;
@@ -453,6 +498,7 @@ class Parser extends Scanner {
     if (expr['type'] != 'mcall') {
       error("expected mcall but found $expr");
     }
+    locals.add(new Set());
     List<Map> params;
     if (at("|")) {
       params = parseParamList();
@@ -461,6 +507,7 @@ class Parser extends Scanner {
       params = [];
     }
     expr['doblock'] = {'type': 'doblock', 'params': params, 'block': parseBlock(token)};
+    locals.removeLast();
     return expr;
   }
 
@@ -530,7 +577,10 @@ class Parser extends Scanner {
     if (new RegExp(r"^\d+").hasMatch(current)) {
       return {'type': 'lit', 'value': double.parse(consume())};
     }
-    if (new RegExp(r"^\w+").hasMatch(current)) {
+    if (new RegExp(r"^[A-Z]").hasMatch(current)) {
+      return {'type': 'const', 'name': consume()};
+    }
+    if (new RegExp(r"^[a-z_]").hasMatch(current)) {
       return {'type': 'var', 'name': consume()};
     }
     if (current[0] == '"' || current[0] == "'") {
@@ -579,9 +629,12 @@ class Parser extends Scanner {
    */
   Map parseParam() {
     if (at("*")) {
-      return {'type': 'restparam', 'name': parseName()};
+      var name = parseName();
+      locals.last.add(name);
+      return {'type': 'restparam', 'name': name};
     }
     var name = parseName();
+    locals.last.add(name);
     var init = null;
     if (at("=")) {
       init = parseExpr();
@@ -620,5 +673,26 @@ class Parser extends Scanner {
     }
     error("expected name but found ${current}");
   }
-}
 
+  /**
+   * Tracks a local variable if the given AST node is one.
+   */
+  void trackLocal(Map ast) {
+    if (ast['type'] == 'var') {
+      locals.last.add(ast['name']);
+    }
+  }
+
+  /**
+   * Returns true, if the name is a known local variable.
+   * Used to distinguish local variable access from implicit method calls without parentheses.
+   */
+  bool isLocal(String name) {
+    for (int i = locals.length - 1; i >= 0; --i) {
+      if (locals[i].contains(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+}

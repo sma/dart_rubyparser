@@ -91,6 +91,9 @@ Map<String, Printer> printMethods = {
   'instvar': (Map ast) {
     emit("@" + ast['name']);
   },
+  'const': (Map ast) {
+    emit(ast['name']);
+  },
   'def': (Map ast) {
     emit("def ");
     if (ast['classname'] != null) {
@@ -215,14 +218,6 @@ Map<String, Printer> printMethods = {
     emit("::");
     emit(ast['name']);
   },
-  'exprlist': (Map ast) {
-    List<Map> list = ast['list'];
-    for (var expr in list) {
-      pp(expr);
-      emit(",");
-    }
-    if (!list.isEmpty) line=line.slice(0, -1);
-  },
   'array': (Map ast) {
     emit("[");
     List<Map> args = ast['args'];
@@ -285,9 +280,9 @@ Map<String, Printer> printMethods = {
   },
   'alias': (Map ast) {
     emit("alias ");
-    emit(ast['old']);
+    emit(":" + ast['old']);
     emit(" ");
-    emit(ast['new']);
+    emit(":" + ast['new']);
   },
   'self': (Map ast) {
     emit('self');
@@ -419,6 +414,7 @@ array           args
 var             name
 instvar         name
 globalvar       name
+const           name
 symbol          name
 param           name init
 restparam       name
