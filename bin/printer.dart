@@ -211,6 +211,11 @@ Map<String, Printer> rubyMethods = {
     if (value is String) {
       value = '"${value.replaceAll('"', '\\"')}"';
     }
+    if (value is num) {
+      if (value == value.truncate()) {
+        value = value.truncate();
+      }
+    }
     emit("$value");
   },
   'relit': (Map ast) {
@@ -377,6 +382,8 @@ String fixname(String name) {
   return name.replaceFirst("?", "_Q").replaceFirst("!", "_B").replaceFirst("=", "_E");
 }
 
+String className;
+
 Map<String, Printer> dartMethods = {
   'assignment': (Map ast) {
     List<Map> targetList = ast['targetList'];
@@ -450,7 +457,11 @@ Map<String, Printer> dartMethods = {
       emit(ast['classname']);
       emit(".");
     }
-    emit(fixname(ast['name']));
+    if (ast['name'] == 'initialize' && className != null) {
+      emit(className);
+    } else {
+      emit(fixname(ast['name']));
+    }
     emit("(");
     List<Map> params = ast['params'];
     for (var param in params) {
@@ -465,10 +476,14 @@ Map<String, Printer> dartMethods = {
     emit("}");
   },
   'param': (Map ast) {
-    emit(ast['name']);
-    if (ast['init'] != null) { //TODO
+    if (ast['init'] != null) {
+      emit("[");
+      emit(ast['name']);
       emit("=");
       pp(ast['init']);
+      emit("]");
+    } else {
+      emit(ast['name']);
     }
   },
   'restparam': (Map ast) { //TODO
@@ -571,10 +586,15 @@ Map<String, Printer> dartMethods = {
     if (value is String) {
       value = '"${value.replaceAll('"', '\\"')}"';
     }
+    if (value is num) {
+      if (value == value.truncate()) {
+        value = value.truncate();
+      }
+    }
     emit("$value");
   },
   'relit': (Map ast) {
-    emit("new RegExp(\"${ast['value']}\")");
+    emit("new RegExp(r\"${ast['value']}\")");
   },
   '::': (Map ast) {
     pp(ast['expr']);
@@ -582,14 +602,14 @@ Map<String, Printer> dartMethods = {
     emit(ast['name']);
   },
   'array': (Map ast) {
-    emit("[");
+    emit("new Array.from([");
     List<Map> args = ast['args'];
     for (Map arg in args) {
       pp(arg);
       emit(",");
     }
     if (!args.isEmpty) line=line.slice(0, -1);
-    emit("]");
+    emit("])");
   },
   'not': (Map ast) {
     emit("(!");
@@ -605,7 +625,9 @@ Map<String, Printer> dartMethods = {
     }
     emit(" {");
     nl(1);
+    className = ast['name'];
     returnblock(ast['block']);
+    className = null;
     nl(-1);
     emit("}");
   },
@@ -626,18 +648,30 @@ Map<String, Printer> dartMethods = {
     line=line.slice(0, -1);
   },
   'for': (Map ast) {
-    emit("for ");
+    emit("for (");
     pp(ast['target']);
     emit(" in ");
     pp(ast['expr']);
-    emit(" {");
+    emit(") {");
     nl(1);
     returnblock(ast['block']);
     nl(-1);
     emit("}");
   },
-  '..': op('..'), //TODO
-  '...': op('...'), //TODO
+  '..': (Map ast) {
+    emit("new Range.incl(");
+    pp(ast['left']);
+    emit(",");
+    pp(ast['right']);
+    emit(")");
+  },
+  '...': (Map ast) {
+    emit("new Range.excl(");
+    pp(ast['left']);
+    emit(",");
+    pp(ast['right']);
+    emit(")");
+  },
   'next': (Map ast) {
     emit('continue');
   },

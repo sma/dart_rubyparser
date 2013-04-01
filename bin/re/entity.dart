@@ -1,18 +1,19 @@
 part of rainbowsend;
 
 class Entity {
-  var id, name;
-  List<Order> orders = [];
-  List<String> events = [];
+  int id;
+  String name;
+  final Array<Order> orders = new Array();
+  final Array<String> events = new Array();
 
-  get nameid => "${name} [${id}]";
+  String get nameid => "${name} [${id}]";
 
-  event(List<Object> args) {
-    events.add("${G_slot}: ${args.join(' ')}.");
+  void event(String message) {
+    events.add("${$slot}: ${message}.");
   }
 
-  quote(List<Object> args) {
-    var buf = "${G_slot}: >";
+  void quote(List<Object> args) {
+    var buf = "${$slot}: >";
     for (var arg in args) {
       buf += " ";
       arg = arg.toString();
