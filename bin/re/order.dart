@@ -71,14 +71,14 @@ void readorders() {
   if (file == null) throw ("Orders file not found");
   try {
     var words = read(file);
-    while (true) {
+    while (words != null) {
       while ((words[0].toLowerCase() != "player")) {
         words = read(file);
         if (words == null) return;
       }
       var p = findplayer(int.parse(words[1]));
-      if ((!p)) {
-        var words = read(file);
+      if (p == null) {
+        words = read(file);
         continue;
       }
       p.orders.clear();
@@ -98,7 +98,7 @@ void readorders() {
       while ((words[0].toLowerCase() == "unit")) {
         var u = findunit(p,int.parse(words[1]));
         var w;
-        if ((!u)) {
+        if (u == null) {
           p.quote(words.toList());
           p.event("You have no such unit");
           do {

@@ -242,7 +242,7 @@ void friendly(Player p, List<String> args) {
 }
 void give(Player p, List<String> args) {
   var p2 = findplayer(int.parse(args[1]));
-  if ((!p2)) {
+  if (p2 == null) {
     p.event("Player not recognized");
     return;
   }
@@ -334,7 +334,7 @@ void combathex(Hex h) {
       return;
     }
     var u2 = findtarget(u);
-    if ((!u2)) {
+    if (u2 == null) {
       return;
     }
     u2.player.friendly.remove(u.player);

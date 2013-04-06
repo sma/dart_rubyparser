@@ -192,6 +192,7 @@ class Array<E> /*implements Iterable<E>*/ {
   List toList() {
     return _elements;
   }
+  toString() => "Array$_elements";
 }
 class Save {
   static void save() {}
