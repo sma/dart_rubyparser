@@ -22,8 +22,9 @@ void write(Object s) {
 }
 
 void writeC(int n, String c) {
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < n; i++) {
     file.write(c);
+  }
 }
 
 void space(int n) {
@@ -83,8 +84,9 @@ int wrap(String s, int indent) {
     // If we're at the end of the string
     // then we're done
 
-    if (s.isEmpty)
+    if (s.isEmpty) {
       return i;
+    }
 
     // Move on to the next word
 
@@ -174,7 +176,7 @@ void reportplayersummary(Player p) {
     writeW(p2.id, 8);
     if (p == p2) {
       writeW("n/a", 9);
-    } else if (p.friendly.include_Q(p2)) {
+    } else if (p.friendly.contains(p2)) {
       writeW("friendly", 9);
     } else {
       writeW("hostile", 9);
@@ -207,7 +209,7 @@ void reportplayerdetails(Player p) {
     item("Email", 11, p2.email != null ? p2.email : "None");
     if (p == p2) {
       item("Relations", 11, "N/A");
-    } else if (p.friendly.include_Q(p2)) {
+    } else if (p.friendly.contains(p2)) {
       item("Relations", 11, "Friendly");
     } else {
       item("Relations", 11, "Hostile");
@@ -224,14 +226,16 @@ void reportunitsummary(Player p, Player p2) {
   for (int i = 0; i < p2.units.length; i++)
   {
     Unit u = p2.units[i];
-    if (!p.cansee(u))
+    if (!p.cansee(u)) {
       continue;
+    }
 
     found = true;
     break;
   }
-  if (!found)
+  if (!found) {
     return;
+  }
 
   write("Unit summary: ");
   writeline(p2.nameid);
@@ -239,8 +243,9 @@ void reportunitsummary(Player p, Player p2) {
   writeline("  ------  ---------  --  --  -----");
 
   p2.units.each((u) {
-    if (!p.cansee(u))
+    if (!p.cansee(u)) {
       return;
+    }
     int h = u._hex;
     int x = htox(h);
     int y = htoy(h);
@@ -266,11 +271,13 @@ void reportunitdetails(Player p) {
   int j = 0;
   while (i < p.units.length || j < p.removedunits.length) {
     Unit ui = null;
-    if (i < p.units.length)
+    if (i < p.units.length) {
       ui = p.units[i];
+    }
     Unit uj = null;
-    if (j < p.removedunits.length)
+    if (j < p.removedunits.length) {
       uj = p.removedunits[j];
+    }
 
     Unit u;
     if (ui == null) {
@@ -290,8 +297,9 @@ void reportunitdetails(Player p) {
     writeline(u.nameid);
     reportevents(u);
 
-    if (u.removed)
+    if (u.removed) {
       continue;
+    }
 
     item("Type", 12, Unittypes[u.type].name.toUpperCase());
     item("Location", 12, u.hex().nameid);
@@ -301,20 +309,22 @@ void reportunitdetails(Player p) {
 }
 
 void reporthexsummary(Player p) {
-  if (p.units.isEmpty)
+  if (p.units.isEmpty) {
     return;
+  }
 
   writeline("Hex summary");
   writeline("   x   y  terrain   city");
   writeline("  --  --  --------  ----");
 
-  for (int y = 0; y < $mapsizey; y++)
+  for (int y = 0; y < $mapsizey; y++) {
     for (int x = 0; x < $mapsizex; x++)
     {
       int h = xytoh(x, y);
       Hex hex = $hexes[h];
-      if (!p.cansee(hex))
+      if (!p.cansee(hex)) {
         continue;
+      }
       int t = hex.terrain;
 
       right(x, 4);
@@ -326,11 +336,13 @@ void reporthexsummary(Player p) {
         writeline("n/a");
         continue;
       }
-      if (cityarea(hex))
+      if (cityarea(hex)) {
         writeline("yes");
-      else
+      } else {
         writeline("no");
+      }
     }
+  }
 
   writeline("  --  --  --------  ----");
   newline();
@@ -340,13 +352,13 @@ void _reporthexdetails(Player p, Hex hex) {
   bool found = false;
   for (int i = 0; i < hex.events.length; i++) {
     Hexevent he = hex.events[i];
-    if (he.players.include_Q(p)) {
+    if (he.players.contains(p)) {
       found = true;
       break;
     }
   }
 
-  if (p.cansee(hex))
+  if (p.cansee(hex)) {
     for (int i = 0; i < $units.length; i++) {
       Unit u = $units[i];
       if (u.hex() == hex) {
@@ -354,52 +366,61 @@ void _reporthexdetails(Player p, Hex hex) {
         break;
       }
     }
+  }
 
-  if (!found)
+  if (!found) {
     return;
+  }
 
   writeline(hex.nameid);
 
   found = false;
   for (int i = 0; i < hex.events.length; i++) {
     Hexevent he = hex.events[i];
-    if (he.players.include_Q(p)) {
+    if (he.players.contains(p)) {
       reportevent(he.event);
       found = true;
     }
   }
-  if (found)
+  if (found) {
     newline();
+  }
 
-  if (!p.cansee(hex))
+  if (!p.cansee(hex)) {
     return;
+  }
 
   found = false;
   $players.each((p2) {
     p2.units.each((u) {
-      if (u.hex() != hex)
+      if (u.hex() != hex) {
         return;
+      }
 
       space(2);
-      if (p2 == p)
+      if (p2 == p) {
         write("* ");
-      else
+      } else {
         write("- ");
+      }
       writeline(u.namepidtype());
 
       found = true;
     });
   });
-  if (found)
+  if (found) {
     newline();
+  }
 
   String s;
-  if (cityarea(hex))
+  if (cityarea(hex)) {
     s = "Yes";
-  else
+  } else {
     s = "No";
-  if (hex.terrain == 0)
+  }
+  if (hex.terrain == 0) {
     s = "N/A";
+  }
   item("City area", 9, s);
   newline();
 }
@@ -420,8 +441,9 @@ void templateitem(String caption, int n, String co) {
 }
 
 void reporttemplate(Player p) {
-  if (p.units.isEmpty)
+  if (p.units.isEmpty) {
     return;
+  }
 
   underline("Order template");
 
@@ -434,8 +456,9 @@ void reporttemplate(Player p) {
 
 void report(Player p) {
   file = File.open("${p.id}.txt", "w");
-  if (file == null)
+  if (file == null) {
     throw("Unable to create report file");
+  }
 
   reportheader(p);
   reporttotals();
