@@ -211,8 +211,12 @@ class File {
   }
 
   static File open(String name, [String mode="r"]) {
-    if (mode == "w") return new File.forWrite(name);
-    return new File(new io.File(name).readAsLinesSync());
+    try {
+      if (mode == "w") return new File.forWrite(name);
+      return new File(new io.File(name).readAsLinesSync());
+    } on io.FileIOException catch (e) {
+      return null;
+    }
   }
   String gets() {
     return i < lines.length ? lines[i++] : null;
