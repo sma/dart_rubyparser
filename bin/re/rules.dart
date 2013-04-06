@@ -78,14 +78,16 @@ void build(Unit u, List<String> args) {
     u.event("Too close to an existing city");
     return;
   }
-  var id = int.parse(args[1]);
+  var a1 = A(args, 1, "1");
+  var a2 = A(args, 2, null);
+  var id = int.parse(a1);
   if (((id < 1) || (id > 99999))) {
-    var id = 1;
+    id = 1;
   }
-  if (new RegExp("^[A-Za-z]").hasMatch(args[1]) && args[2] == null) {
-    args[2] = args[1];
+  if (new RegExp("^[A-Za-z]").hasMatch(a1) && a2 == null) {
+    a2 = a1;
   }
-  var name = A(args, 2, Unittypes[type].name);
+  var name = a2 != null ? a2 : Unittypes[type].name;
   var cost = Unittypes[type].buildcost;
   if ((cost == 0)) {
     u.event("You cannot build this unit type");

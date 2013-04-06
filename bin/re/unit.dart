@@ -129,7 +129,7 @@ void addunit(Unit u) {
   $units.add(u);
   u.hex().units.add(u);
   var units = u.player.units;
-  if ((units.isEmpty || (units[(-1)].id < u.id))) {
+  if ((units.isEmpty || (units.last().id < u.id))) {
     units.add(u);
   } else {
     var i = 0;

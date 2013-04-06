@@ -11,14 +11,15 @@ part 'order.dart';
 part 'parse.dart';
 part 'player.dart';
 part 'rules.dart';
+part 'save.dart';
 part 'unit.dart';
 part 'writerpt.dart';
 
 int $humanplayers = 0;
 const $computerplayers = 2;
 const $startingmoney = 50;
-const $mapsizex = 25;
-const $mapsizey = 25;
+int $mapsizex = 25;
+int $mapsizey = 25;
 const $cityseparation = 3;
 const $sightingdistance = 3;
 
@@ -194,10 +195,7 @@ class Array<E> /*implements Iterable<E>*/ {
   }
   toString() => "Array$_elements";
 }
-class Save {
-  static void save() {}
-  static void load() {}
-}
+
 class File {
   List<String> lines;
   String name;
