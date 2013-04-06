@@ -1,0 +1,204 @@
+v00001
+collection.dart
+false
+
+
+dart 
+
+linked_hash_table.dart
+false
+_LinkedHashTableHeadMarker _LinkedHashTableKeyIterable _LinkedHashTableKeyIterator _HEAD_MARKER _LinkedHashTable _LinkedHashTableIterator _LinkedHashTableValueIterator _LinkedHashTableValueIterable 
+_hashTable _put to _LinkedHashTable value result prev last _LinkedHashTableKeyIterable capacity K _prev next _table _NEXT_INDEX _LinkedHashTableKeyIterator contains _LinkedHashTableIterator _setNext oldEntry _LinkedHashTableValueIterable key _deleteEntry _HEAD_OFFSET _HEAD_MARKER _valueIndex table _linkLast _addAllEntries current object moveNext offset oldTable _modificationCount _entrySize _current iterator T V i _clear _LinkedHashTableValueIterator length _setPrev _LinkedHashTableHeadMarker toOffset nextOffset _PREV_INDEX _createTable _unlink _offset _getCurrent hashTable _next initialCapacity 
+_hashTable _probeForAdd dart _elementCount _setKey _entryCount _table _recordModification _hashCodeOf _deletedCount _copyEntry 
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/identical.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+
+iterator.dart
+false
+HasNextIterator 
+E _move next HasNextIterator _HAS_NEXT_AND_NEXT_IN_CURRENT hasNext result _NO_NEXT _iterator _state _NOT_MOVED_YET 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/iterator.dart 1359165004000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+
+collections.dart
+false
+Collections IterableMixinWorkaround UnmodifiableListView 
+e skipList where any other retained value setContainsAll every result isEmpty last source setToRemove elementsToRemove retainAll smaller l initialValue removeWhereList lastWhereList a retainWhere test contains separator remaining lookup removeAll single mapList _source removeWhere setDifference start previousValue skipWhile it Collections f lastIndexOfList startFrom collectionToString object asMapList join combine firstWhere list setRangeList compare elementAt map indexOfList n b joinList takeWhile removeAllList larger iterator [] reduce i sortList from orElse length o takeList singleWhere setIntersection c max first min elementsToRetain setUnion lastWhere IterableMixinWorkaround forEach E index iterable foundMatching buffer element reversedList collection expand set UnmodifiableListView 
+dart 
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/collection.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string_buffer.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/set.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/collections.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/to_string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/arrays.dart 1363405448000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/sort.dart 1360396019000
+
+queue.dart
+false
+Queue _DoubleLinkedQueueIterator DoubleLinkedQueue _DoubleLinkedQueueEntrySentinel DoubleLinkedQueueEntry ListQueue _ListQueueIterator 
+e _currentEntry append elements queue firstPartSize value ListQueue last isEmpty source _INITIAL_CAPACITY _table _position prevOffset nextNumber retainWhere test newElementCount lastEntry previousEntry toString _remove target removeWhere _nextPowerOf2 _link newCapacity _grow remove removeFirst current object moveNext DoubleLinkedQueue offset _modificationCount DoubleLinkedQueueEntry n entry objectsToRetain addFirst iterator objectsToRemove _head addLast i sourceList Queue _element nextOffset _ListQueueIterator _end forEach index iterable firstEntry growable sentinel newTable _elementCount _tail other result _writeToList retainAll expectedModificationCount next p preSpace _asNonSentinelEntry _sentinel removeLast action mask single removeAll addAll toList endDistance nextEntry clear _DoubleLinkedQueueIterator _filterWhere _isPowerOf2 _add removeMatching f add addCount _checkModification list elementAt _current modificationCount length o prepend endSpace forEachEntry first _queue _previous _DoubleLinkedQueueEntrySentinel number split E _preGrow _next startDistance element initialCapacity 
+dart _link 
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/collection.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/identical.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/collections.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/queue.dart 1363405448000
+
+maps.dart
+false
+Maps 
+v putIfAbsent k containsKey value isEmpty map key ifAbsent forEach containsValue clear Maps getValues m length mapToString f 
+dart 
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1359778589000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/to_string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+
+splay_tree.dart
+false
+SplayTreeMap _SplayTreeKeyIterator _SplayTreeValueIterator _SplayTreeValueIterable _SplayTreeIterator _SplayTreeNode _SplayTreeNodeIterator _SplayTreeMapNode _SplayTree _SplayTreeKeyIterable 
+_SplayTreeValueIterator currentNode _addNewRoot value result isEmpty _splayMin _SplayTreeIterator _splay comp K _count nodes _SplayTreeKeyIterator root tmp key1 tree toString _root _remove firstKey lastKey key _rebuildWorkList SplayTreeMap _SplayTreeValueIterable clear _splayMax _tree _compare _SplayTreeNode remove current _splayCount f values _comparator moveNext putIfAbsent _currentNode _findLeftMostDescendent _SplayTreeMapNode initialSplayCount _SplayTree containsKey _modificationCount _last compare map iterator right lastKeyBefore [] V T modificationCount _clear key2 _dummy length _map _workList _SplayTreeNodeIterator _first []= node _SplayTreeKeyIterable found splayCount _getValue ifAbsent forEach containsValue left keys firstKeyAfter 
+dart _addNewRoot _splay _clear _first compareTo _last _modificationCount _remove _root _count _splayCount 
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1359778589000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://collection/collection.dart dart://collection/collection.dart/splay_tree.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+
+hash_set.dart
+false
+HashSet 
+object add offset other entrySize isEmpty entry objectsToRetain iterator retainAll _INITIAL_CAPACITY objectsToRemove modificationCount otherSet _table length intersection retainWhere test contains union containsAll toString shouldRemove removeAll addAll difference key removeWhere E clear isSubsetOf remove iterable _filterWhere element HashSet removeMatching objects 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/hash_set.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/collections.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/collection.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/identical.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/set.dart 1363405448000
+
+hash_table.dart
+false
+_HashTableValueIterable _NULL _HashTableIterable _HashTableIterator _DeadEntry _TOMBSTONE _HashTable _HashTableKeyIterable _HashTableKeyIterator _HashTableValueIterator _NullKey 
+_hashTable _put _elementCount other entrySize value _container isEmpty _HashTable _equals _hashCodeOf firstTombstone _HashTableValueIterable capacity _probeForAdd probeCount _HashTableIterable fromTable K expectedModificationCount _table _copyEntry minCapacity _entryIndex action contains _checkCapacity _remove oldEntry marker _HashTableValueIterator key _NullKey _get _firstProbe _deleteEntry _grow _DeadEntry table _entryCount _addAllEntries current _key _TOMBSTONE _deletedCount object moveNext offset _checkModification _setKey _HashTableIterator oldTable _recordModification _modificationCount fromOffset entry _valueAt _entrySize iterator _current _capacity _NULL V i modificationCount hashCode _clear _probeForLookup length _nextProbe contentCount currentOffset toOffset _createTable _offset forEach E freeCount index hashTable previousIndex _isFree element initialCapacity _HashTableKeyIterable _HashTableKeyIterator 
+_hashTable dart 
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/identical.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+
+linked_hash_set.dart
+false
+LinkedHashSet 
+add object offset other entrySize last isEmpty iterator _INITIAL_CAPACITY retainAll objectsToRemove modificationCount lastOffset otherSet _table length firstOffset intersection first action retainWhere test contains union containsAll nextOffset toString shouldRemove single LinkedHashSet removeAll addAll difference key forEach removeWhere E clear isSubsetOf iterable remove _filterWhere element removeMatching objects 
+dart 
+dart://core/core.dart dart://core/core.dart/collection.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/set.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_set.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/collections.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+
+hash_map.dart
+false
+_HashMapTable HashMap 
+_hashTable putIfAbsent offset other entrySize containsKey value fromOffset _VALUE_INDEX isEmpty HashMap entry _entrySize _HashMapTable _INITIAL_CAPACITY [] V modificationCount fromTable _value K length oldValue _copyEntry action toOffset toString []= addAll key ifAbsent forEach containsValue _setValue clear remove table keys values 
+dart _table 
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1359778589000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/identical.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/hash_map.dart 1361137193000
+
+linked_hash_map.dart
+false
+_LinkedHashMapTable LinkedHashMap 
+_hashTable putIfAbsent offset other oldTable containsKey value fromOffset _VALUE_INDEX isEmpty entry _entrySize _INITIAL_CAPACITY [] V _value modificationCount K LinkedHashMap length oldValue _copyEntry _LinkedHashMapTable action toOffset toString []= addAll key ifAbsent forEach containsValue _setValue clear remove keys values 
+dart _table 
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_map.dart 1361137193000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/identical.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_table.dart 1362465790000
+dart://collection/collection.dart dart://collection/collection.dart/hash_table.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1359778589000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+

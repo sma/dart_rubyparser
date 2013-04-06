@@ -1,0 +1,61 @@
+v00001
+parser.dart
+false
+Parser 
+targetList parseForStmt list parseExpr parseFactor expr trackLocal parseTerm parseParam parseLogic parseParamList parseAssignment parseSimpleStmt parseShift parseUnary parseDoBlock exprList parseBlock parseClassStmt args parseExprAsList whenList parseWhileStmt superclass parseAnd parseSymbolList isLocal parseDefStmt source parseSimpleExpr thenBlock newSym init target isPrimary oldSym stmt parseIfStmt whens token Parser parse parseCaseStmt classname parseName parsePostfix whenExpr parseRange parsePrimary parseComp parseStmt params thenExpr locals name elseBlock ast parseOr parseSymbol i block elseExpr 
+atEnd add consume current expect eol isKeyword error at 
+dart://core/core.dart dart://core/core.dart/double.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/scanner.dart 1364628738000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1362465789000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/parser.dart 1364664635000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/set.dart 1363405448000
+
+scanner.dart
+false
+Scanner 
+next eol KEYWORDS message matches at token atEnd consume Scanner current re expect source isKeyword value error 
+multiLine 
+dart://core/core.dart dart://core/core.dart/set.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1362465789000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/scanner.dart 1364628738000
+
+rubyparser.dart
+false
+parse main 
+file parse main source parser 
+rubyparser 
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://io/io.dart dart://io/io.dart/file.dart 1364004168000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/printer.dart 1364720164000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/parser.dart 1364664635000
+dart://io/io.dart dart://io/io.dart/directory.dart 1364004168000
+dart://core/core.dart dart://core/core.dart/print.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/rubyparser.dart 1364681588000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+
+printer.dart
+false
+indent emit nl fixname returnblock dartMethods pp op line Printer className rubyMethods 
+targetList arg list type nl expr target pp stmt whens symbol returnblock op exprList className Printer rubyMethods s printer j indent emit fixname args dartMethods line when params symbols isNew param name ast ret i stmts block value 
+ret 
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/rubyparser.dart file:/Users/sma/dart/rubyparser/bin/rubyparser.dart/printer.dart 1364720164000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/map.dart 1361137192000
+dart://core/core.dart dart://core/core.dart/num.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/print.dart 1357359234000
+

@@ -1,0 +1,186 @@
+v00001
+rainbowsend.dart
+false
+$mapsizey $sightingdistance rand Array Save $humanplayers main even File $mapsizex $cityseparation odd sign $computerplayers _rnd $startingmoney 
+arguments gets close e shuffle each write value isEmpty last File open rand a contains _elements $humanplayers toList main clear save start $cityseparation remove dup sign mode find f each_with_index add $mapsizey list name map n b even iterator s detect [] odd i $computerplayers line length max j $sightingdistance load Array []= collect Save lines E sublist $mapsizex insert t index x _rnd element select $startingmoney 
+rainbowsend nextInt io 
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/print.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://io/io.dart dart://io/io.dart/options.dart 1363405450000
+dart://core/core.dart dart://core/core.dart/string_buffer.dart 1363405448000
+dart://io/io.dart dart://io/io.dart/file.dart 1364004168000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://math/math.dart dart://math/math.dart/random.dart 1359778589000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+
+game.dart
+false
+$slot $turn playerorders unitorders_ unitorders newgame runturn 
+phase $slot $turn p playerorders unitorders_ unitorders u o newgame si runturn 
+
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/order.dart 1364825981000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/ai.dart 1364825046000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rules.dart 1364834659000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/writerpt.dart 1364834659000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+
+parse.dart
+false
+parse 
+re match parse a line 
+
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/parse.dart 1364826951000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1362465789000
+
+writerpt.dart
+false
+writeW write reportunitsummary countcities reporttemplate right item reportgeneralorders writeC underline reporttotals reporthexdetails writereports reportevent space file reportheader reportunitdetails writeline reportplayersummary _reporthexdetails reporthexsummary reportevents report templateitem reportplayerdetails newline wrap 
+co e write u reportunitsummary countcities reporttemplate ss ui item p hex underline reporttotals reporthexdetails reportevent y reportheader file units reportunitdetails writeline h reportplayersummary report indent reportplayerdetails newline wrap totmoney writeW cities pp uj n totunits p2 right s i reportgeneralorders writeC c j writereports he space found caption _reporthexdetails reporthexsummary width t reportevents x templateitem money 
+
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/entity.dart 1364833536000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rules.dart 1364834659000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/writerpt.dart 1364834659000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+
+order.dart
+false
+read readorders Order doorder2 Maxorders addorder adjustorders_ findtype doorder adjustorders 
+Ordertypes read e readorders Order each u s Maxorders i args p adjustorders_ o findtype Null line Quit Group Move Build Ungroup words a file addorder Wait Name type Hostile doorder Email order adjustorders Fire w Give doorder2 Friendly Drop Explore 
+event quote 
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rules.dart 1364834659000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/parse.dart 1364826951000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/entity.dart 1364833536000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/order.dart 1364825981000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+
+map.dart
+false
+onmap htoy findhex offshore htox xytoh displace Hexevent Hex findterrain htob inithexes $hexes Terrains htoa allochexes Terrain distance 
+htoy each displace Hex movementcost p hex distance findhex a1 htox events Forest a y Hexevent units h2 h1 h htob idstr b1 htoa xy Mountain onmap nameid Plain d name terrain Terraintypes s Terrains i event count Terrain da b2 a2 offshore xytoh he message findterrain inithexes $hexes Water x db allochexes isWater players 
+
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://math/math.dart dart://math/math.dart/base.dart 1358274559000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+
+ai.dart
+false
+_combatorders $moneythreshold decideorders _decideorders 
+_combatorders i p targets u2 $moneythreshold u decideorders hex _decideorders ut 
+
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/order.dart 1364825981000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/ai.dart 1364825046000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+
+unit.dart
+false
+findunit nearestcity Unittypes findunittype Unittype removeunit initunits initcities deletecities Unit addunit moveunit $units 
+Tanks id nearestcity namepid more u removeunit buildcost initcities p special hex ut2 addunit moveunit upkeepcost _hex a Unittypes units City h removed c2 defense isRuin attack Scouts findunit Artillery d player Ruins name s range r i Settlers pid c movement findunittype Unittype type namepidtype ut isCity initunits Infantry Mechs deletecities Unit $units 
+id 
+dart://core/core.dart dart://core/core.dart/num.dart 1363405448000
+dart://math/math.dart dart://math/math.dart/base.dart 1358274559000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/entity.dart 1364833536000
+
+entity.dart
+false
+Entity 
+id Entity events nameid buf args event quote orders message name arg 
+
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/order.dart 1364825981000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/entity.dart 1364833536000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/game.dart 1364833370000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+
+player.dart
+false
+allocplayers Player readplayers removeplayers $players initplayers countplayers findplayer 
+allocplayers id removeplayers email pp initplayers u countplayers findplayer cansee $players i p o line hex removedunits Player readplayers words _ units file lastorders compareTo money friendly cmp 
+id 
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/entity.dart 1364833536000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/parse.dart 1364826951000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+
+rules.dart
+false
+upkeep email combathex move combat name quit drop fire cantarget captureunit capturehex A cityarea findtarget finddir destroys give ungroup Abbr explore capture Full hostile refreshunits build group income friendly has nextid 
+upkeep id e u quit args p fire A hex findtarget a finddir give destroys h explore Abbr capture c2 hostile refreshunits build group attack income friendly nextid d email combathex combat uu move name p2 s drop r range from captureunit cantarget capturehex c cityarea cost qty targets u2 type ungroup dir def index Full has 
+
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/player.dart 1364828459000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/map.dart 1364833817000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rules.dart 1364834659000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1362465789000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/rainbowsend.dart 1364834739000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/entity.dart 1364833536000
+dart://core/core.dart dart://core/core.dart/num.dart 1363405448000
+dart://math/math.dart dart://math/math.dart/base.dart 1358274559000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart file:/Users/sma/dart/rubyparser/bin/re/rainbowsend.dart/unit.dart 1364834464000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+

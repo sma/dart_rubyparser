@@ -1,0 +1,34 @@
+v00001
+base.dart
+false
+IsolateUnhandledException spawnUri _Isolate port spawnFunction SendPort IsolateSpawnException SendPortSync ReceivePort 
+close e send port other topLevelFunction SendPortSync toSendPort source spawnUri stackTrace receive hashCode == _s IsolateUnhandledException _Isolate call callback SendPort spawnFunction toString message ReceivePort uri IsolateSpawnException callSync unhandledExceptionCallback replyTo 
+replaceAll dart toString 
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://async/async.dart dart://async/async.dart/future.dart 1362465792000
+dart://core/core.dart dart://core/core.dart/object.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/exceptions.dart 1362465789000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://isolate/isolate.dart dart://isolate/isolate.dart/base.dart 1364004168000
+
+isolate.dart
+false
+
+
+dart 
+
+isolate_stream.dart
+false
+stream IsolateSink _isCloseToken MessageBox streamSpawnFunction IsolateStream 
+add close object e other _isClosed topLevelFunction listen error event == sink MessageBox message addError onData streamSpawnFunction IsolateStream stream unsubscribeOnError IsolateSink onDone onError _port _isCloseToken errorEvent _add _controller unhandledExceptionCallback replyTo 
+unsubscribeOnError dart onDone onError 
+dart://async/async.dart dart://async/async.dart/stream_controller.dart 1363405452000
+dart://async/async.dart dart://async/async.dart/stream.dart 1363405452000
+dart://isolate/isolate.dart dart://isolate/isolate.dart/isolate_stream.dart 1364004168000
+dart://async/async.dart dart://async/async.dart/async_error.dart 1362465792000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://isolate/isolate.dart dart://isolate/isolate.dart/base.dart 1364004168000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+

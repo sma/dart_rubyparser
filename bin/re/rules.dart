@@ -138,7 +138,7 @@ void explore(Unit u, List<String> args) {
     u.event("Nothing found");
     return;
   }
-  if (((r.player != u.player) && (!r.player.friendly.include_Q(u.player)))) {
+  if (((r.player != u.player) && (!r.player.friendly.contains(u.player)))) {
     u.event("${r.namepidtype()} is not secured and must be captured first");
     return;
   }
@@ -197,7 +197,7 @@ void fire(Unit u, List<String> args) {
     return;
   }
   hex.units.each((u2) {
-    if (((u2.player == u.player) || u.player.friendly.include_Q(u2.player))) {
+    if (((u2.player == u.player) || u.player.friendly.contains(u2.player))) {
       u.event("Friendly units in target area - fire mission aborted");
       return;
     }
@@ -235,7 +235,7 @@ void friendly(Player p, List<String> args) {
     p.event("Player not recognized");
     return;
   }
-  if ((!p.friendly.include_Q(p2))) {
+  if ((!p.friendly.contains(p2))) {
     p.friendly.add(p2);
   }
   p.event("Declared ${p2.nameid} as friendly");
@@ -314,7 +314,7 @@ void quit(Player p) {
 void ungroup(Unit u, List<String> args) {
 }
 bool cantarget(Unit u,Unit u2) {
-  return (!(((u2.isCity() || u2.isRuin()) || (u.player == u2.player)) || u.player.friendly.include_Q(u2.player)));
+  return (!(((u2.isCity() || u2.isRuin()) || (u.player == u2.player)) || u.player.friendly.contains(u2.player)));
 }
 Unit findtarget(Unit u) {
   if ((u.attack == 0)) {
@@ -366,7 +366,7 @@ void captureunit(Unit c, Hex h) {
     if ((u.player == c.player)) {
       continue;
     }
-    if (u.player.friendly.include_Q(c.player)) {
+    if (u.player.friendly.contains(c.player)) {
       continue;
     }
     if (h.units.detect((u2) {

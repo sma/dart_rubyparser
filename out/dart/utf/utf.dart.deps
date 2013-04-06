@@ -1,0 +1,82 @@
+v00001
+utf_stream.dart
+false
+Utf8EncoderTransformer Utf8DecoderTransformer _HelperStreamController _StringDecoder _StringEncoder 
+Utf8EncoderTransformer codepoints charCode handleDone _HelperStreamController value _addChar string goodChars available _buffer T i next additionalBytes length pos onPauseStateChange sink data char Utf8DecoderTransformer handleData min _processString getNext replacementChar carry currentPos _processBytes _StringDecoder _carry consumed onPauseChanged _replacementChar bytes _StringEncoder 
+dart _addChar 
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://utf/utf.dart dart://utf/utf.dart/utf_stream.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf_core.dart 1362465790000
+dart://async/async.dart dart://async/async.dart/stream.dart 1363405452000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://async/async.dart dart://async/async.dart/stream_controller.dart 1363405452000
+
+utf8.dart
+false
+encodeUtf8 codepointsToUtf8 _UTF8_SUBSEQUENT_BYTE_BASE _addToEncoding _UTF8_FIRST_BYTE_OF_SIX_BASE _UTF8_FIRST_BYTE_OF_TWO_BASE _UTF8_FIRST_BYTE_OF_FIVE_BASE _UTF8_FIRST_BYTE_OF_FOUR_BASE decodeUtf8 _UTF8_THREE_BYTE_MAX _UTF8_FIRST_BYTE_OF_THREE_BASE _UTF8_LO_SIX_BIT_MASK decodeUtf8AsIterable _UTF8_FIRST_BYTE_OF_FOUR_MASK Utf8Decoder _UTF8_ONE_BYTE_MAX _UTF8_FIRST_BYTE_OF_THREE_MASK _UTF8_FIRST_BYTE_OF_TWO_MASK utf8ToCodepoints _UTF8_TWO_BYTE_MAX IterableUtf8Decoder _UTF8_FIRST_BYTE_BOUND_EXCL 
+replacementCodepoint _UTF8_FIRST_BYTE_OF_SIX_BASE value source nextValue decodeUtf8AsIterable inRange nonOverlong _UTF8_FIRST_BYTE_BOUND_EXCL _addToEncoding _UTF8_FIRST_BYTE_OF_TWO_BASE _UTF8_FIRST_BYTE_OF_FIVE_BASE _UTF8_FIRST_BYTE_OF_FOUR_BASE str _UTF8_FIRST_BYTE_OF_THREE_BASE validSequence Utf8Decoder _UTF8_ONE_BYTE_MAX _UTF8_TWO_BYTE_MAX current encodeUtf8 codepointsToUtf8 _UTF8_SUBSEQUENT_BYTE_BASE codepoints moveNext offset insertAt decodeRest utf8EncodedBytesIterator _UTF8_FIRST_BYTE_OF_FOUR_MASK iterator _current _UTF8_FIRST_BYTE_OF_TWO_MASK _UTF8_FIRST_BYTE_OF_THREE_MASK encodedLength utf8ToCodepoints i truncCodepoints additionalBytes length utf8EncodedBytes j decodeUtf8 _UTF8_THREE_BYTE_MAX _UTF8_LO_SIX_BIT_MASK buffer encoded IterableUtf8Decoder bytes 
+dart 
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf8.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf_core.dart 1362465790000
+
+utf32.dart
+false
+encodeUtf32be IterableUtf32Decoder decodeUtf32AsIterable Utf32leBytesDecoder decodeUtf32 Utf32BytesDecoder decodeUtf32beAsIterable Utf32BytesDecoderProvider decodeUtf32leAsIterable Utf32beBytesDecoder _validCodepoint encodeUtf32 hasUtf32beBom encodeUtf32le decodeUtf32be decodeUtf32le hasUtf32Bom hasUtf32leBom 
+encodeUtf32be decode decodeUtf32AsIterable IterableUtf32Decoder moveNext offset replacementCodepoint Utf32leBytesDecoder writeBOM Utf32BytesDecoder value utf32EncodedBytesIterator Utf32BytesDecoderProvider decodeUtf32leAsIterable Utf32beBytesDecoder decodeRest utf32EncodedBytes encodeUtf32 _current iterator stripBom encoding i hasUtf32beBom unit length count hasUtf32leBom backup codepoint decodeUtf32 utf32CodeUnits remaining codeunitsProvider decodeUtf32beAsIterable str _validCodepoint by position end codeunits encodeUtf32le decodeUtf32be bytes current decodeUtf32le skip hasUtf32Bom 
+dart utf32EncodedBytesIterator skip 
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf32.dart 1362465790000
+dart://utf/utf.dart dart://utf/utf.dart/utf_core.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+
+utf16.dart
+false
+hasUtf16Bom decodeUtf16be hasUtf16beBom hasUtf16leBom decodeUtf16beAsIterable _stringToUtf16CodeUnits encodeUtf16be Utf16beBytesToCodeUnitsDecoder encodeUtf16 decodeUtf16le encodeUtf16le Utf16BytesToCodeUnitsDecoder Utf16leBytesToCodeUnitsDecoder decodeUtf16 decodeUtf16AsIterable IterableUtf16Decoder _CodeUnitsProvider decodeUtf16leAsIterable 
+decode utf16EncodedBytes hasUtf16Bom replacementCodepoint hasUtf16beBom hasUtf16leBom decodeUtf16le encoding decodeUtf16AsIterable unit lo decodeUtf16be remaining codeunitsProvider str by encodeUtf16 encodeUtf16le end codeunits truncCodeunits Utf16BytesToCodeUnitsDecoder Utf16leBytesToCodeUnitsDecoder utf16CodeUnits decodeUtf16 IterableUtf16Decoder current decodeUtf16leAsIterable moveNext offset writeBOM encodeUtf16be decodeRest utf32EncodedBytes iterator _current hi stripBom utf16EncodedBytesIterator i length count decoder backup decodeUtf16beAsIterable _stringToUtf16CodeUnits Utf16beBytesToCodeUnitsDecoder position _CodeUnitsProvider bytes skip 
+dart utf16EncodedBytesIterator skip 
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf_core.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf16.dart 1362465790000
+
+utf_core.dart
+false
+_codepointsToUtf16CodeUnits UNICODE_PLANE_ONE_MAX UNICODE_UTF_BOM_HI UNICODE_BYTE_ONE_MASK UNICODE_VALID_RANGE_MAX UNICODE_UTF16_OFFSET _ListRangeIterator Utf16CodeUnitDecoder UNICODE_REPLACEMENT_CHARACTER_CODEPOINT _ListRange UNICODE_BYTE_ZERO_MASK stringToCodepoints UNICODE_UTF_BOM_LO UNICODE_BOM UNICODE_UTF16_LO_MASK UNICODE_UTF16_HI_MASK UNICODE_UTF16_SURROGATE_UNIT_0_BASE codepointsToString UNICODE_UTF16_RESERVED_LO UNICODE_UTF16_RESERVED_HI UNICODE_UTF16_SURROGATE_UNIT_1_BASE _ListRangeIteratorImpl _utf16CodeUnitsToCodepoints 
+replacementCodepoint UNICODE_UTF_BOM_HI value _ListRange stringToCodepoints source nextValue UNICODE_UTF16_LO_MASK UNICODE_UTF16_SURROGATE_UNIT_0_BASE UNICODE_UTF16_RESERVED_LO _ListRangeIteratorImpl _utf16CodeUnitsToCodepoints base UNICODE_BYTE_ONE_MASK remaining _ListRangeIterator UNICODE_BYTE_ZERO_MASK str UNICODE_UTF_BOM_LO _source by utf16CodeUnits codepointsToString current codepointTrunc UNICODE_PLANE_ONE_MAX codepoints moveNext offset UNICODE_VALID_RANGE_MAX UNICODE_BOM _current iterator encodedLength i length count decoder UNICODE_UTF16_SURROGATE_UNIT_1_BASE UNICODE_UTF16_RESERVED_HI backup _codepointsToUtf16CodeUnits j codeUnitsBuffer utf16CodeUnitIterator UNICODE_UTF16_OFFSET Utf16CodeUnitDecoder UNICODE_REPLACEMENT_CHARACTER_CODEPOINT _length _offset _end position listRange UNICODE_UTF16_HI_MASK skip 
+dart 
+dart://core/core.dart dart://core/core.dart/string.dart 1363405448000
+dart://utf/utf.dart dart://utf/utf.dart/utf_core.dart 1362465790000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/int.dart 1363405448000
+dart://core/core.dart dart://core/core.dart/bool.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/errors.dart 1361582373000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1359165003000
+dart://core/core.dart dart://core/core.dart/function.dart 1357359234000
+dart://core/core.dart dart://core/core.dart/list.dart 1363405448000
+
+utf.dart
+false
+
+
+dart 
+

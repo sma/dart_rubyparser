@@ -73,7 +73,7 @@ class Array<E> /*implements Iterable<E>*/ {
     _elements.add(element);
   }
 
-  void isert(int index, E element) {
+  void insert(int index, E element) {
     _elements.insert(index, element);
   }
 
@@ -168,10 +168,6 @@ class Array<E> /*implements Iterable<E>*/ {
     _elements = [];
   }
 
-  void insert(int index, E element) {
-    _elements.insert(index, element);
-  }
-
   E last() {
     return _elements[_elements.length - 1];
   }
@@ -182,7 +178,7 @@ class Array<E> /*implements Iterable<E>*/ {
 
   Iterator<E> get iterator => _elements.iterator;
 
-  bool include_Q(E element) {
+  bool contains(E element) {
     return _elements.contains(element);
   }
 
