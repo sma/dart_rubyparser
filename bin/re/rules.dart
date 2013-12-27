@@ -5,13 +5,13 @@ String A(List<String> args, int index, String def) {
 }
 
 bool cityarea(Hex h) {
-  return (nearestcity(h) < $cityseparation);
+  return nearestcity(h) < $cityseparation;
 }
 
 void refreshunits() {
   $units.each((u) {
-    u.movement = (Unittypes[u.type].movement);
-    u.special = (1);
+    u.movement = Unittypes[u.type].movement;
+    u.special = 1;
   });
 }
 
@@ -25,8 +25,8 @@ void nextid(Unit u) {
   }
 }
 
-Array<String> Abbr = new Array.from(["n","ne","se","s","sw","nw"]);
-Array<String> Full = new Array.from(["north","northeast","southeast","south","southwest","northwest"]);
+final Array<String> Abbr = new Array.from(["n","ne","se","s","sw","nw"]);
+final Array<String> Full = new Array.from(["north","northeast","southeast","south","southwest","northwest"]);
 
 int finddir(String s) {
   var dir = Abbr.index(s.toLowerCase());
@@ -128,6 +128,7 @@ void email(Player p, List<String> args) {
   p.email = (email);
   p.event("Email address changed to $email");
 }
+
 void explore(Unit u, List<String> args) {
   if ((u.type != Unit.Settlers)) {
     u.event("Only settlers may explore");
@@ -169,6 +170,7 @@ void explore(Unit u, List<String> args) {
       break;
   }
 }
+
 void fire(Unit u, List<String> args) {
   var range = Unittypes[u.type].range;
   if ((range == 0)) {
@@ -231,6 +233,7 @@ void fire(Unit u, List<String> args) {
     removeunit(u2);
   });
 }
+
 void friendly(Player p, List<String> args) {
   Player p2 = findplayer(int.parse(args[0]));
   if ((p2 == null)) {
@@ -242,6 +245,7 @@ void friendly(Player p, List<String> args) {
   }
   p.event("Declared ${p2.nameid} as friendly");
 }
+
 void give(Player p, List<String> args) {
   var p2 = findplayer(int.parse(args[1]));
   if (p2 == null) {
@@ -254,8 +258,10 @@ void give(Player p, List<String> args) {
   p.event("Gave ${p2.nameid} ${qty} money");
   p2.event("${p.nameid} gave ${qty} money");
 }
+
 void group(Unit u, List<String> args) {
 }
+
 void hostile(Player p, List<String> args) {
   var p2 = findplayer(int.parse(args[1]));
   if (p2 == null) {
@@ -265,6 +271,7 @@ void hostile(Player p, List<String> args) {
   p.friendly.remove(p2);
   p.event("Declared ${p2.nameid} as hostile");
 }
+
 void move(Unit u, List<String> args) {
   var d = finddir(A(args, 0, ""));
   var hex;
@@ -301,6 +308,7 @@ void move(Unit u, List<String> args) {
   from.event("${u.namepidtype()} moved to ${hex.idstr}");
   hex.event("${u.namepidtype()} arrived from ${from.idstr}");
 }
+
 void name(Entity e, List<String> args) {
   var name = args[0];
   if (((name == null) || (name == ""))) {
@@ -310,14 +318,18 @@ void name(Entity e, List<String> args) {
   e.name = (name);
   e.event("Name changed to $name");
 }
+
 void quit(Player p) {
   p.email = null;
 }
+
 void ungroup(Unit u, List<String> args) {
 }
+
 bool cantarget(Unit u,Unit u2) {
   return (!(((u2.isCity() || u2.isRuin()) || (u.player == u2.player)) || u.player.friendly.contains(u2.player)));
 }
+
 Unit findtarget(Unit u) {
   if ((u.attack == 0)) {
     return null;
@@ -330,6 +342,7 @@ Unit findtarget(Unit u) {
   }
   return targets[rand(targets.length)];
 }
+
 void combathex(Hex h) {
   h.units.shuffle().each((u) {
     if (u.removed) {
@@ -352,6 +365,7 @@ void combathex(Hex h) {
     }
   });
 }
+
 void combat() {
   $hexes.each((h) {
     if ((!h.units.isEmpty)) {
@@ -359,6 +373,7 @@ void combat() {
     }
   });
 }
+
 void captureunit(Unit c, Hex h) {
   Array<Unit> a = h.units.shuffle();
   for (Unit u in a) {
@@ -390,6 +405,7 @@ void captureunit(Unit c, Hex h) {
     break;
   };
 }
+
 void capturehex(Hex h) {
   Unit c = h.units.detect((u) {
     return u.isCity();
@@ -404,6 +420,7 @@ void capturehex(Hex h) {
     captureunit(c,h);
   }
 }
+
 void capture() {
   $hexes.each((h) {
     if ((!h.units.isEmpty)) {
@@ -411,6 +428,7 @@ void capture() {
     }
   });
 }
+
 void income() {
   $units.each((u) {
     var income = (-Unittypes[u.type].upkeepcost);
@@ -419,6 +437,7 @@ void income() {
     }
   });
 }
+
 void upkeep() {
   $players.each((p) {
     p.units.dup().each((u) {
@@ -434,4 +453,3 @@ void upkeep() {
     });
   });
 }
-

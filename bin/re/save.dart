@@ -17,13 +17,13 @@ class Save {
   static void newline() {
     file.write("\n");
   }
-  static void comment(String c) {
-    file.write("# $c\n");
+  static void comment(String co) {
+    file.write("# $co\n");
   }
-  static void write(Object o, String c) {
+  static void write(Object o, String co) {
     write_n(o);
     space(2);
-    comment(c);
+    comment(co);
   }
 
   static void save() {
@@ -105,7 +105,7 @@ class Save {
       $turn = int.parse(words[0]);
       words = read();
       int n = int.parse(words[0]);
-      $players = new Array<Player>();
+      $players = new Array<Player>(n);
       for (int i = 0; i < n; i++) {
         $players.add(new Player());
       }

@@ -60,7 +60,7 @@ class Unit extends Entity {
   int get defense => Unittypes[type].defense;
 }
 
-Array<Unittype> Unittypes = new Array.from([
+final Array<Unittype> Unittypes = new Array.from([
   new Unittype("city",20,(-10),0,0,0,0),
   new Unittype("settlers",10,1,3,0,2,0),
   new Unittype("infantry",10,1,3,4,4,0),
@@ -70,7 +70,7 @@ Array<Unittype> Unittypes = new Array.from([
   new Unittype("mechs",0,3,6,6,6,2),
   new Unittype("scouts",5,1,6,0,1,0)]);
 
-Array<Unit> $units = new Array();
+final Array<Unit> $units = new Array();
 
 void deletecities() {
   $units.each((u) {
@@ -151,6 +151,7 @@ int findunittype(String s) {
 Unit findunit(Player p,int id) {
   return p.units.detect((u) => u.id == id);
 }
+
 int nearestcity(Hex h,[c=null]) {
   var r = 999999;
   $units.each((c2) {
@@ -160,11 +161,13 @@ int nearestcity(Hex h,[c=null]) {
   });
   return r;
 }
+
 void moveunit(Unit u,Hex hex) {
   u.hex().units.remove(u);
   u._hex = (hex.h);
   u.hex().units.add(u);
 }
+
 void removeunit(Unit u) {
   $units.remove(u);
   u.player.units.remove(u);

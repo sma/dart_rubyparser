@@ -15,7 +15,10 @@ void parse(File file) {
 }
 
 void main() {
-  for (var file in new Directory("rb").listSync()) {
+  /*
+  for (File file in new Directory("rb").listSync()) {
     parse(file);
   }
+  */
+  pp(new Parser(new File("../rb/save.rb").readAsStringSync()).parse());
 }

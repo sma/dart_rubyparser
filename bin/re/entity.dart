@@ -25,4 +25,17 @@ class Entity {
     }
     events.add(buf);
   }
+
+  void adjustorders() {
+    orders.each((o) {
+      if ((o.type != Order.Wait)) {
+        return;
+      }
+      o.type = Order.Null;
+      var i = orders.index(o) + 1;
+      while (orders.length < Maxorders) {
+        orders.insert(i, new Order(Order.Null,new Array()));
+      }
+    });
+  }
 }

@@ -1,12 +1,12 @@
 part of rainbowsend;
 
 class Terrain {
-  static Array<String> Terraintypes = new Array.from(["water","plain","forest","mountain"]);
+  static final Array<String> Terraintypes = new Array.from(["water","plain","forest","mountain"]);
 
-  static int Water = 0;
-  static int Plain = 1;
-  static int Forest = 2;
-  static int Mountain = 3;
+  static const int Water = 0;
+  static const int Plain = 1;
+  static const int Forest = 2;
+  static const int Mountain = 3;
 
   String name;
   int movementcost;
@@ -27,8 +27,8 @@ class Hexevent {
 }
 
 class Hex {
-  int terrain;
   int h;
+  int terrain;
   Array<Unit> units;
   Array<Hexevent> events;
 
@@ -38,16 +38,17 @@ class Hex {
     this.units = new Array();
     this.events = new Array();
   }
+
   bool isWater() {
     return (this.terrain == Terrain.Water);
   }
-  int x() {
-    return (h % $mapsizex);
-  }
-  int y() {
-    return (h / $mapsizex).floor();
-  }
-  String get idstr => "[${x()}/${y()}]";
+
+  int get x => h % $mapsizex;
+
+  int get y => h ~/ $mapsizex;
+
+  String get idstr => "[$x/$y]";
+
   String get nameid => "${Terrains[terrain].name} ${idstr}";
 
   void event(String message) {
@@ -61,17 +62,17 @@ class Hex {
   }
 }
 
-Array<Terrain> Terrains = new Array.from([
+final Array<Terrain> Terrains = new Array.from([
   new Terrain(Terrain.Water,0),
   new Terrain(Terrain.Plain,1),
   new Terrain(Terrain.Forest,2),
   new Terrain(Terrain.Mountain,3)
 ]);
 
-Array<Hex> $hexes = new Array();
+final Array<Hex> $hexes = new Array();
 
 void allochexes() {
-  $hexes = new Array();
+  $hexes.clear();
   for (int h = 0; h < $mapsizex * $mapsizey; h++) {
     $hexes.add(new Hex(h));
   }
@@ -92,31 +93,29 @@ bool offshore(Hex h) {
 void inithexes() {
   allochexes();
   var count = $hexes.length;
-  $hexes[(rand((count / 2).floor()) + (count / 4).floor())].terrain = (Terrain.Mountain);
-
-  for (int i = 0; i < (count / 2) - 1; i++) {
+  $hexes[rand(count ~/ 2) + count ~/ 4].terrain = Terrain.Mountain;
+  var n = count ~/ 2 - 1;
+  for (int i = 0; i < n; i++) {
     var a = $hexes.select(offshore);
     var h = a[rand(a.length)];
-    var i;
+    var j;
     switch (rand(4)) {
       case 0:
-        i = Terrain.Mountain;
+        j = Terrain.Mountain;
         break;
       case 1:
-        i = Terrain.Forest;
+        j = Terrain.Forest;
         break;
       default:
-        i = Terrain.Plain;
+        j = Terrain.Plain;
         break;
     }
-    h.terrain = (i);
+    h.terrain = j;
   }
 }
 
 int findterrain(String s) {
-  var terrain = Terrain.Terraintypes.detect((String each) {
-    return each.startsWith(s);
-  });
+  var terrain = Terrain.Terraintypes.detect((String each) => each.startsWith(s));
   return Terrain.Terraintypes.index(terrain);
 }
 
@@ -138,15 +137,18 @@ bool onmap(int x,int y) {
 int xytoh(int x,int y) {
   return ((y * $mapsizex) + x);
 }
+
 int htox(int h) {
   return (h % $mapsizex);
 }
+
 int htoy(int h) {
   return (h / $mapsizex).truncate();
 }
+
 Hex displace(Hex hex,int d) {
-  var x = hex.x();
-  var y = hex.y();
+  var x = hex.x;
+  var y = hex.y;
   switch (d) {
     case 0:
       y -= 1;
@@ -185,12 +187,15 @@ Hex displace(Hex hex,int d) {
     return null;
   }
 }
+
 int htoa(Hex h) {
-  return (((h.x() + 1) / 2).floor() + h.y());
+  return (h.x + 1) ~/ 2 + h.y;
 }
+
 int htob(Hex h) {
-  return ((h.x() / 2).floor() - h.y());
+  return h.x ~/ 2 - h.y;
 }
+
 int distance(Hex h1,Hex h2) {
   var a1 = htoa(h1);
   var b1 = htob(h1);
@@ -207,4 +212,3 @@ int distance(Hex h1,Hex h2) {
     return max(da,db);
   }
 }
-

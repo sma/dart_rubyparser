@@ -1,8 +1,7 @@
 part of rainbowsend;
 
 class Order {
-  static Array<String> Ordertypes = new Array.from(
-      ["build","drop","email","explore","fire","friendly","give","group","hostile","move","name","null","quit","ungroup","wait"]);
+  static final Array<String> Ordertypes = new Array.from(["build","drop","email","explore","fire","friendly","give","group","hostile","move","name","null","quit","ungroup","wait"]);
 
   static const int Build = 0;
   static const int Drop = 1;
@@ -124,39 +123,26 @@ void readorders() {
   }
 }
 
-void adjustorders_(Entity e) {
-  return e.orders.each((o) {
-    if ((o.type != Order.Wait)) {
-      return;
-    }
-    o.type = Order.Null;
-    var i = (e.orders.index(o) + 1);
-    while ((e.orders.length < Maxorders)) {
-      e.orders.insert(i, new Order(Order.Null,new Array()));
-    }
-  });
-}
-
 void adjustorders() {
   $players.each((p) {
-    adjustorders_(p);
+    p.adjustorders();
   });
-  $units.each((p) {
-    adjustorders_(p);
+  $units.each((u) {
+    u.adjustorders();
   });
 }
 
-void doorder(dynamic p, Order o) {
-  if (p is Unit) {
-    doorder2((p as Unit),o);
+void doorder(Entity e, Order o) {
+  if (o.type == Order.Null) {
     return;
   }
-  var type = o.type;
-  if ((type == Order.Null)) {
+  e.quote(<String>[Order.Ordertypes[o.type]]..addAll(o.args));
+  if (e is Unit) {
+    doorder2(e,o);
     return;
   }
-  p.quote(Order.Ordertypes[type],o.args);
-  switch (type) {
+  Player p = e;
+  switch (o.type) {
     case Order.Email:
       email(p,o.args);
       break;
@@ -182,14 +168,7 @@ void doorder(dynamic p, Order o) {
 }
 
 void doorder2(Unit u, Order o) {
-  var type = o.type;
-  if ((type == Order.Null)) {
-    return;
-  }
-  var a = <String>[Order.Ordertypes[type]];
-  a.addAll(o.args.toList());
-  u.quote(a);
-  switch (type) {
+  switch (o.type) {
     case Order.Build:
       build(u,o.args.toList());
       break;

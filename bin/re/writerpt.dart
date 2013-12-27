@@ -2,40 +2,25 @@ part of rainbowsend;
 
 File file;
 
-/*
-static int __cdecl cmp(const void *_p1, const void *_p2)
-{
-  player *p1 = *(player **)_p1;
-  player *p2 = *(player **)_p2;
-  int n = p2->units.count - p1->units.count;
-  if (n)
-    return n;
-  n = p2->money - p1->money;
-  if (n)
-    return n;
-  return p1->id - p2->id;
-}
-*/
-
 void write(Object s) {
   file.write("$s");
 }
 
-void writeC(int n, String c) {
+void writec(int n, String c) {
   for (int i = 0; i < n; i++) {
     file.write(c);
   }
 }
 
 void space(int n) {
-  writeC(n, ' ');
+  writec(n, ' ');
 }
 
 void newline() {
   write('\n');
 }
 
-void writeW(Object s, int width) {
+void writew(Object s, int width) {
   var ss = "$s";
   write(ss);
   space(width - ss.length);
@@ -78,8 +63,8 @@ int wrap(String s, int indent) {
     // Print this word
 
     i += j;
-    file.write(s.slice(0, j));
-    s = s.slice(j);
+    file.write(s.substring(0, j));
+    s = s.substring(j);
 
     // If we're at the end of the string
     // then we're done
@@ -90,7 +75,7 @@ int wrap(String s, int indent) {
 
     // Move on to the next word
 
-    s = s.slice(1);
+    s = s.substring(1);
   }
 }
 
@@ -101,7 +86,7 @@ void writeline(Object s) {
 
 void underline(String s) {
   writeline(s);
-  writeC(s.length, '-');
+  writec(s.length, '-');
   newline();
   newline();
 }
@@ -121,8 +106,8 @@ int countcities(Array<Unit> units) {
 void reportevent(String s) {
   space(2);
   int i = s.indexOf(' ') + 1;
-  write(s.slice(0, i));
-  wrap(s.slice(i), 2 + i);
+  write(s.substring(0, i));
+  wrap(s.substring(i), 2 + i);
   newline();
 }
 
@@ -173,13 +158,13 @@ void reportplayersummary(Player p) {
 
   $players.each((p2) {
     space(2);
-    writeW(p2.id, 8);
+    writew(p2.id, 8);
     if (p == p2) {
-      writeW("n/a", 9);
+      writew("n/a", 9);
     } else if (p.friendly.contains(p2)) {
-      writeW("friendly", 9);
+      writew("friendly", 9);
     } else {
-      writeW("hostile", 9);
+      writew("hostile", 9);
     }
     right(p2.money, 7);
     right(p2.units.length, 7);
@@ -251,8 +236,8 @@ void reportunitsummary(Player p, Player p2) {
     int y = htoy(h);
 
     space(2);
-    writeW(u.id, 8);
-    writeW(Unittypes[u.type].name, 9);
+    writew(u.id, 8);
+    writew(Unittypes[u.type].name, 9);
     right(x, 4);
     right(y, 4);
     write("  none");
@@ -330,7 +315,7 @@ void reporthexsummary(Player p) {
       right(x, 4);
       right(y, 4);
       space(2);
-      writeW(Terrains[t].name, 10);
+      writew(Terrains[t].name, 10);
       if (t == 0)
       {
         writeline("n/a");
@@ -479,8 +464,17 @@ void report(Player p) {
 }
 
 void writereports() {
-  // TODO sort...
-  $players.each(report);
+  var players = $players.dup();
+  players.sort((Player p1, Player p2) {
+    int n = p2.units.length - p1.units.length;
+    if (n != 0) {
+      return n;
+    }
+    n = p2.money - p1.money;
+    if (n != 0) {
+      return n;
+    }
+    return p1.id - p2.id;
+  });
+  players.each(report);
 }
-
-

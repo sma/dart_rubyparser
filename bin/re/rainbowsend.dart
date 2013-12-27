@@ -23,32 +23,33 @@ int $mapsizey = 25;
 const $cityseparation = 3;
 const $sightingdistance = 3;
 
-// Internal random number generator (see [rand]).
+/** Internal random number generator (see [rand]). */
 var _rnd = new Random();
 
-// Returns a random number between 0 and n (excluding).
+/** Returns a random number between 0 and n (excluding). */
 int rand(int n) {
   return _rnd.nextInt(n);
 }
 
-// Returns true if the specified number is odd.
+/** Returns true if the specified number is odd. */
 bool odd(int x) {
   return (x % 2) == 1;
 }
 
-// Returns true if the specified number is even.
+/** Returns true if the specified number is even. */
 bool even(int x) {
   return (x % 2) == 0;
 }
 
-// Returns -1 if the specified number is negativ,
-// +1 if the number is positive and 0 if it is zero.
+/** Returns -1 if the specified number is negativ,
+ * +1 if the number is positive and 0 if it is zero. */
 int sign(int x) {
   if (x < 0) return -1;
   if (x > 0) return 1;
   return 0;
 }
 
+/** An Array class compatible with Ruby's API. */
 class Array<E> /*implements Iterable<E>*/ {
   List<E> _elements;
 
@@ -135,7 +136,7 @@ class Array<E> /*implements Iterable<E>*/ {
   Array<E> shuffle() {
     var a = new List.from(_elements);
     for (int i = a.length - 1; i > 0; i--) {
-      var j = rand((i + 1));
+      var j = rand(i + 1);
       var t = a[i];
       a[i] = a[j];
       a[j] = t;
@@ -190,36 +191,45 @@ class Array<E> /*implements Iterable<E>*/ {
   Array<E> sublist(int start) {
     return new Array.from(_elements.sublist(start));
   }
+
   List toList() {
     return _elements;
   }
+
+  void sort(int cmp(E e1, E e2)) {
+    _elements.sort(cmp);
+  }
+
   toString() => "Array$_elements";
 }
 
+/** A File class compatible with Ruby's API. */
 class File {
-  List<String> lines;
-  String name;
-  StringBuffer b;
-  int i = 0;
+  List<String> _lines;
+  String _name;
+  StringBuffer _b;
+  int _i = 0;
 
-  File(this.lines);
+  File.forRead(this._lines);
 
   File.forWrite(String name) {
-    this.name = name;
-    this.b = new StringBuffer();
+    this._name = name;
+    this._b = new StringBuffer();
   }
 
   static File open(String name, [String mode="r"]) {
     try {
       if (mode == "w") return new File.forWrite(name);
-      return new File(new io.File(name).readAsLinesSync());
-    } on io.FileIOException catch (e) {
+      return new File.forRead(new io.File(name).readAsLinesSync());
+    } on io.IOException catch (e) {
       return null;
     }
   }
+
   String gets() {
-    return i < lines.length ? lines[i++] : null;
+    return _i < _lines.length ? _lines[_i++] : null;
   }
+
   void each(void f(String line)) {
     var line = gets();
     while (line != null) {
@@ -227,18 +237,19 @@ class File {
       line = gets();
     }
   }
+
   void close() {
-    if (name != null) {
-      new io.File(name).writeAsStringSync(b.toString());
+    if (_name != null) {
+      new io.File(_name).writeAsStringSync(_b.toString());
     }
   }
+
   write(String s) {
-    b.write(s);
+    _b.write(s);
   }
 }
 
-void main() {
-  var arguments = new io.Options().arguments;
+void main(List<String> arguments) {
   switch (arguments.length > 0 ? arguments[0] : null) {
     case "--new":
       newgame();
@@ -254,6 +265,6 @@ void main() {
       print("See license for details.");
       break;
     default:
-      print("usage: ${new io.Options().script} {--new | --turn | --version}");
+      print("usage: ${io.Platform.script} {--new | --turn | --version}");
   }
 }

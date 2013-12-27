@@ -4,10 +4,13 @@ part of rubyparser;
 class Parser extends Scanner {
   List<Set<String>> locals = [new Set()]; // tracks local variables
 
+  /**
+   * Constructs a new parser for the given [source] string.
+   */
   Parser(String source) : super(source);
 
   /**
-   * Parses the source.
+   * Parses the source and returns an AST node of type `block`.
    */
   Map parse() {
     var list = [];
@@ -285,7 +288,7 @@ class Parser extends Scanner {
   }
 
   /**
-   * Parses a block of statements up to either `end` or the given token.
+   * Parses a block of statements up to either `end` or the given [token].
    */
   Map parseBlock([token="end"]) {
     var list = [];
@@ -302,6 +305,18 @@ class Parser extends Scanner {
 
   /**
    * Parses an expression with the correct operator precedence.
+   *
+   *  - ternary if/then/else `?:`
+   *  - range `..`, `...`
+   *  - logical OR `||`
+   *  - logical AND `&&`
+   *  - equality, comparison and pattern matching ==, !=, <=>, ===, ~=
+   *  - comparisons <, <=, >, >=
+   *  - bit shifting <<
+   *  - addition and subtraction
+   *  - multiplication, division and modulo
+   *  - unary operators
+   *  -
    */
   Map parseSimpleExpr() {
     var expr = parseRange();
@@ -425,9 +440,10 @@ class Parser extends Scanner {
   }
 
   /**
-   * Parses a function application, an index operation, a dereference operation, a `::`
-   * or a do/end or {} block. It tries to detect whether the application has omitted the
-   * parenthesis.
+   * Parses a function application, an index operation, a dereference operation, a `::`,
+   * or a do/end or {} block. The method tries to detect whether the application has omitted
+   * the parenthesis.
+   * Returns a [[]], [::], [mcall], or some other expression node.
    */
   Map parsePostfix(Map expr) {
     while (true) {
@@ -440,7 +456,7 @@ class Parser extends Scanner {
         expr = {'type': '[]', 'expr': expr, 'args': args};
       } else if (at("::")) {
         expr = {'type': '::', 'expr': expr, 'name': parseName()};
-      } else if (at(".")) {
+      } else if (at(".")) { // <expr>.name(foo, ...) or <expr>.name foo, ...
         var name = parseName();
         List<Map> args;
         if (at("(")) {
@@ -456,7 +472,7 @@ class Parser extends Scanner {
           args = [];
         }
         expr = {'type': 'mcall', 'expr': expr, 'name': name, 'args': args};
-      } else if (at("(")) {
+      } else if (at("(")) { // <expr>(foo, ...)
         if (expr['type'] != 'var') {
           error("expected var but found $expr");
         }
@@ -468,21 +484,21 @@ class Parser extends Scanner {
           list = [];
         }
         expr = {'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list};
-      } else if (isPrimary()) {
+      } else if (isPrimary()) { // <expr> foo, ...
         if (expr['type'] != 'var') {
           error("expected var but found $expr");
         }
         List<Map> list = parseExprAsList();
         expr = {'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list};
-      } else if (at("do")) {
+      } else if (at("do")) { // <expr> do ... end
         expr = parseDoBlock(expr, "end");
-      } else if (at("{")) {
+      } else if (at("{")) { // <expr> { ... }
         expr = parseDoBlock(expr, "}");
       } else {
         break;
       }
     }
-    if (expr['type'] == 'var') {
+    if (expr['type'] == 'var') { // for variables that aren't local vars assume a method call
       var name = expr['name'];
       if (!isLocal(name)) {
         expr = {'type': 'mcall', 'expr': null, 'name': name, 'args': []};
@@ -493,6 +509,7 @@ class Parser extends Scanner {
 
   /**
    * Parses a `do/end` or `{...}` block.
+   * Returns a [doblock] node.
    */
   Map parseDoBlock(Map expr, String token) {
     if (expr['type'] != 'mcall') {
@@ -513,7 +530,7 @@ class Parser extends Scanner {
 
   /**
    * Returns true if the the current token is the start of a primary expression.
-   * It is either a constant, a pseudo variable, a litera or a name or symbol.
+   * It is either a constant, a pseudo variable, a literal, a name, or a symbol.
    */
   bool isPrimary() {
     if (atEnd()) {
@@ -529,9 +546,11 @@ class Parser extends Scanner {
   }
 
   /**
-   * Parses a constant like nil, true or false, a pseudo variable like self or super,
-   * an array constructor, a number, a string or regular expression, an instance variable,
-   * a global variable or a local variable (which might really be an implicit method call).
+   * Parses a constant like nil, true, or false, a pseudo variable like self or super,
+   * an array constructor, a number, a string, or regular expression, an instance variable,
+   * a global variable or a local variable (which might actually be an implicit method call).
+   * Returns a [lit], [relit], [self], [array], [return], [const], [symbol],
+   * [var], [instvar], [globalvar], or some other expression node.
    */
   Map parsePrimary() {
     if (at("(")) {
@@ -584,25 +603,28 @@ class Parser extends Scanner {
       return {'type': 'var', 'name': consume()};
     }
     if (current[0] == '"' || current[0] == "'") {
-      return {'type': 'lit', 'value': consume().slice(1, -1)};
+      String v = consume();
+      return {'type': 'lit', 'value': v.substring(1, v.length - 1)};
     }
     if (current[0] == '/' && current.length > 1) {
-      return {'type': 'relit', 'value': consume().slice(1, -1)};
+      String v = consume();
+      return {'type': 'relit', 'value': v.substring(1, v.length - 1)};
     }
     if (current[0] == '@') {
-      return {'type': 'instvar', 'name': consume().slice(1)};
+      return {'type': 'instvar', 'name': consume().substring(1)};
     }
     if (current[0] == '\$') {
-      return {'type': 'globalvar', 'name': consume().slice(1)};
+      return {'type': 'globalvar', 'name': consume().substring(1)};
     }
     if (current[0] == ':') {
-      return {'type': 'symbol', 'name': consume().slice(1)};
+      return {'type': 'symbol', 'name': consume().substring(1)};
     }
     error("expected primary but found ${current}");
   }
 
   /**
    * Parses a single expression or a comma-separated list of expressions.
+   * Returns a list of expression nodes.
    */
   List<Map> parseExprAsList() {
     var expr = parseExpr();
@@ -614,6 +636,7 @@ class Parser extends Scanner {
 
   /**
    * Parses a non-empty parameter list.
+   * Returns a list of [param] or [restparam] nodes.
    */
   List<Map> parseParamList() {
     List<Map> list = [];
@@ -626,6 +649,7 @@ class Parser extends Scanner {
 
   /**
    * Parses a parameter with an optional initializer or `*` indicating a rest parameter.
+   * Returns a [param] or [restparam] nodes.
    */
   Map parseParam() {
     if (at("*")) {
@@ -643,7 +667,7 @@ class Parser extends Scanner {
   }
 
   /**
-   * Parses a comma-separated list of symbols.
+   * Parses and returns a comma-separated list of symbols.
    */
   List<String> parseSymbolList() {
     var list = [];
@@ -655,17 +679,19 @@ class Parser extends Scanner {
   }
 
   /**
-   * Parses a symbol or signals an error.
+   * Parses and returns a symbol or signals an error.
+   * (Symbols starts with a `:`)
    */
   String parseSymbol() {
     if (new RegExp(r"^:.").hasMatch(current)) {
-      return consume().slice(1);
+      return consume().substring(1);
     }
     error("expected symbol but found ${current}");
   }
 
   /**
-   * Parses a name or signals an error.
+   * Parses and returns a name or signals an error.
+   * (Names start with a letter)
    */
   String parseName() {
     if (new RegExp(r"^\w").hasMatch(current)) {
@@ -684,7 +710,7 @@ class Parser extends Scanner {
   }
 
   /**
-   * Returns true, if the name is a known local variable.
+   * Returns true if the name is a known local variable.
    * Used to distinguish local variable access from implicit method calls without parentheses.
    */
   bool isLocal(String name) {

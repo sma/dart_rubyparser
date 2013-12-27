@@ -1,7 +1,10 @@
 // Copyright 2013 by Stefan Matthias Aust
 part of rubyparser;
 
+// current indentation
 String indent = "";
+
+// current line
 String line = "";
 
 /**
@@ -13,12 +16,12 @@ emit(String s) {
 
 /**
  * Prints the current line and adapts the indent.
- * If [i] is < 0, the next line is dedented.
+ * If [i] is < 0, the current line is dedented.
  * If [i] is > 0, the next line is indented.
  */
 nl([i=0]) {
   if (i < 0) {
-    indent = indent.slice(0, -2);
+    indent = indent.substring(0, indent.length - 2);
   }
   if (!line.isEmpty) {
     print(indent + line);
@@ -29,10 +32,26 @@ nl([i=0]) {
   }
 }
 
+/**
+ * Prints the given [ast] by using the [Printer] functions from [dartMethods].
+ */
+void pp(Map ast) {
+  String type = ast['type'];
+  Printer printer = dartMethods[type];
+  if (printer == null) {
+    throw "missing printer functino for $ast";
+  }
+  printer(ast);
+}
+
+/**
+ * Defines a function that gets an AST node.
+ */
 typedef void Printer(Map ast);
 
 /**
  * Returns a printer function for the binary operator [op].
+ * It will recursively print the left and right expressions, in parenthesis, separated by [op].
  */
 Printer op(String op) {
   return (Map ast) {
@@ -50,13 +69,13 @@ Map<String, Printer> rubyMethods = {
        pp(target);
        emit(",");
      }
-     line=line.slice(0, -1);
+     line = line.substring(0, line.length-1);
      emit(" = ");
      for (Map expr in ast['exprList']) {
        pp(expr);
       emit(",");
      }
-     line=line.slice(0, -1);
+     line = line.substring(0, line.length-1);
    },
   'block': (Map ast) {
     List<Map> list = ast['list'];
@@ -107,7 +126,7 @@ Map<String, Printer> rubyMethods = {
       pp(param);
       emit(",");
     }
-    if (!params.isEmpty) line=line.slice(0, -1);
+    if (!params.isEmpty) line = line.substring(0, line.length-1);
     emit(")");
     nl(1);
     pp(ast['block']);
@@ -166,7 +185,7 @@ Map<String, Printer> rubyMethods = {
       pp(arg);
       emit(",");
     }
-    if (!args.isEmpty) line=line.slice(0, -1);
+    if (!args.isEmpty) line = line.substring(0, line.length-1);
     emit(")");
     var block = ast['doblock'];
     if (block != null) {
@@ -181,7 +200,7 @@ Map<String, Printer> rubyMethods = {
       pp(arg);
       emit(",");
     }
-    if (!args.isEmpty) line=line.slice(0, -1);
+    if (!args.isEmpty) line = line.substring(0, line.length-1);
     emit("]");
   },
   'case': (Map ast) {
@@ -201,7 +220,7 @@ Map<String, Printer> rubyMethods = {
       pp(expr);
       emit(",");
     }
-    line=line.slice(0, -1);
+    line = line.substring(0, line.length-1);
     nl(1);
     pp(ast['block']);
     nl(-1);
@@ -233,7 +252,7 @@ Map<String, Printer> rubyMethods = {
       pp(arg);
       emit(",");
     }
-    if (!args.isEmpty) line=line.slice(0, -1);
+    if (!args.isEmpty) line = line.substring(0, line.length-1);
     emit("]");
   },
   'not': (Map ast) {
@@ -364,20 +383,40 @@ Map<String, Printer> rubyMethods = {
   }
 };
 
+/**
+ * Emits a block with an optional return statment for the last statement.
+ */
 void returnblock(ast, {ret:false}) {
   List<Map> stmts = ast['list'];
+  bool rescue = false, ensure = false;
+  for (Map stmt in stmts) {
+    if (stmt['type'] == 'rescue') rescue = true;
+    if (stmt['type'] == 'ensure') ensure = true;
+  }
+  if (rescue || ensure) {
+    emit("try {");
+    nl(1);
+  }
   for (int i = 0; i < stmts.length; i++) {
-    if (ret && i == stmts.length - 1) {
+    if (ret && i == stmts.length - 1 && !['for', 'if', 'block'].contains(stmts[i]['type'])) {
       emit("return ");
     }
     pp(stmts[i]);
-    if (!line.endsWith("}")) {
+    if (!line.endsWith("}") && line.trim().length > 0) {
       emit(";");
     }
     nl();
   }
+  if (rescue || ensure) {
+    emit("}");
+    nl(-1);
+  }
 }
 
+/**
+ * Makes Ruby names usable with Dart.
+ * Replaces a trailing `?` with `_Q`, a trailing `!` with `_B`, and a trailing `=` with `_E`.
+ */
 String fixname(String name) {
   return name.replaceFirst("?", "_Q").replaceFirst("!", "_B").replaceFirst("=", "_E");
 }
@@ -394,13 +433,13 @@ Map<String, Printer> dartMethods = {
         pp(target);
         emit(",");
       }
-      line=line.slice(0, -1);
+      line = line.substring(0, line.length-1);
       emit(" = ");
       for (Map expr in exprList) {
         pp(expr);
         emit(",");
       }
-      line=line.slice(0, -1);
+      line = line.substring(0, line.length-1);
       return;
     }
     for (int i = 0; i < targetList.length; i++) {
@@ -436,7 +475,7 @@ Map<String, Printer> dartMethods = {
       pp(param);
       emit(",");
     }
-    if (!params.isEmpty) line=line.slice(0, -1);
+    if (!params.isEmpty) line = line.substring(0, line.length-1);
     emit(") {");
     nl(1);
     returnblock(ast['block'], ret: true);
@@ -454,8 +493,12 @@ Map<String, Printer> dartMethods = {
   },
   'def': (Map ast) {
     if (ast['classname'] != null) {
-      emit(ast['classname']);
-      emit(".");
+      if (ast['classname'] != className) {
+        emit(ast['classname']);
+        emit(".");
+      } else {
+        emit("static ");
+      }
     }
     if (ast['name'] == 'initialize' && className != null) {
       emit(className);
@@ -468,7 +511,7 @@ Map<String, Printer> dartMethods = {
       pp(param);
       emit(",");
     }
-    if (!params.isEmpty) line=line.slice(0, -1);
+    if (!params.isEmpty) line = line.substring(0, line.length-1);
     emit(") {");
     nl(1);
     returnblock(ast['block'], ret: ast['name'] != "initialize");
@@ -538,7 +581,7 @@ Map<String, Printer> dartMethods = {
     if (block != null) {
       pp(block);
     } else {
-      if (!args.isEmpty) line=line.slice(0, -1);
+      if (!args.isEmpty) line = line.substring(0, line.length-1);
     }
     emit(")");
   },
@@ -550,7 +593,7 @@ Map<String, Printer> dartMethods = {
       pp(arg);
       emit(",");
     }
-    if (!args.isEmpty) line=line.slice(0, -1);
+    if (!args.isEmpty) line = line.substring(0, line.length-1);
     emit("]");
   },
   'case': (Map ast) {
@@ -608,7 +651,7 @@ Map<String, Printer> dartMethods = {
       pp(arg);
       emit(",");
     }
-    if (!args.isEmpty) line=line.slice(0, -1);
+    if (!args.isEmpty) line = line.substring(0, line.length-1);
     emit("])");
   },
   'not': (Map ast) {
@@ -637,7 +680,7 @@ Map<String, Printer> dartMethods = {
     for (var symbol in symbols) {
       emit("$symbol,");
     }
-    line=line.slice(0, -1);
+    line = line.substring(0, line.length-1);
   },
   'attr_reader': (Map ast) {
     emit("final ");
@@ -645,7 +688,7 @@ Map<String, Printer> dartMethods = {
     for (var symbol in symbols) {
       emit("$symbol,");
     }
-    line=line.slice(0, -1);
+    line = line.substring(0, line.length-1);
   },
   'for': (Map ast) {
     emit("for (");
@@ -716,8 +759,18 @@ Map<String, Printer> dartMethods = {
     emit("}");
   },
   'break': (Map ast) => emit("break"),
-  'ensure': (Map ast) => emit("ensure"), //TODO
-  'rescue': (Map ast) => emit("rescue"), //TODO
+  'ensure': (Map ast) {
+    emit("}");
+    nl(-1);
+    emit("finally {");
+    nl(1);
+  },
+  'rescue': (Map ast) {
+    emit("}");
+    nl(-1);
+    emit("catch (e) {");
+    nl(1);
+  },
   'splat': (Map ast) {
     emit("*");
     pp(ast['expr']);
@@ -744,23 +797,17 @@ Map<String, Printer> dartMethods = {
     emit(")");
   },
   'module': (Map ast) { //TODO
-    emit("module ");
+    emit("class ");
     emit(ast['name']);
+    emit(" {");
     nl(1);
+    className = ast['name'];
     returnblock(ast['block']);
+    className = null;
+    emit("}");
     nl(-1);
-    emit("end");
   }
 };
-
-void pp(Map ast) {
-  String type = ast['type'];
-  Printer printer = dartMethods[type];
-  if (printer == null) {
-    throw "missing $ast";
-  }
-  printer(ast);
-}
 
 /*
 
@@ -824,5 +871,4 @@ const           name
 symbol          name
 param           name init
 restparam       name
-
  */
