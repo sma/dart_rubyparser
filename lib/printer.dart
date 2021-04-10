@@ -2,10 +2,10 @@
 part of rubyparser;
 
 // current indentation
-String indent = "";
+String indent = '';
 
 // current line
-String line = "";
+String line = '';
 
 /**
  * Appends [s] to the current line.
@@ -25,10 +25,10 @@ void nl([int i = 0]) {
   }
   if (line.isNotEmpty) {
     print(indent + line);
-    line = "";
+    line = '';
   }
   if (i > 0) {
-    indent += "  ";
+    indent += '  ';
   }
 }
 
@@ -38,7 +38,7 @@ void nl([int i = 0]) {
 void pp(AST ast) {
   final printer = dartMethods[ast.type];
   if (printer == null) {
-    throw "missing printer function for $ast";
+    throw 'missing printer function for $ast';
   }
   printer(ast);
 }
@@ -54,11 +54,11 @@ typedef Printer = void Function(AST ast);
  */
 Printer op(String op) {
   return (ast) {
-    emit("(");
+    emit('(');
     pp(ast['left']);
-    emit(" $op ");
+    emit(' $op ');
     pp(ast['right']);
-    emit(")");
+    emit(')');
   };
 }
 
@@ -66,13 +66,13 @@ final rubyMethods = <String, Printer>{
   'assignment': (ast) {
     for (AST target in ast['targetList']) {
       pp(target);
-      emit(",");
+      emit(',');
     }
     line = line.substring(0, line.length - 1);
-    emit(" = ");
+    emit(' = ');
     for (AST expr in ast['exprList']) {
       pp(expr);
-      emit(",");
+      emit(',');
     }
     line = line.substring(0, line.length - 1);
   },
@@ -84,67 +84,67 @@ final rubyMethods = <String, Printer>{
     }
   },
   'globalvar': (ast) {
-    emit("\$${ast.name}");
+    emit('\$${ast.name}');
   },
   'doblock': (ast) {
-    emit(" do");
+    emit(' do');
     nl(1);
     final params = ast['params'] as List<AST>;
     if (params.isNotEmpty) {
-      emit("|");
+      emit('|');
       for (final param in params) {
-        emit(" ");
+        emit(' ');
         pp(param);
       }
-      emit(" | ");
+      emit(' | ');
     }
     nl();
     pp(ast['block']);
-    emit("end");
+    emit('end');
     nl(-1);
   },
   'var': (ast) {
     emit(ast.name);
   },
   'instvar': (ast) {
-    emit("@" + ast.name);
+    emit('@' + ast.name);
   },
   'const': (ast) {
     emit(ast.name);
   },
   'def': (ast) {
-    emit("def ");
+    emit('def ');
     if (ast['classname'] != null) {
       emit(ast['classname'] as String);
-      emit(".");
+      emit('.');
     }
     emit(ast.name);
-    emit("(");
+    emit('(');
     final params = ast['params'] as List<AST>;
     for (final param in params) {
       pp(param);
-      emit(",");
+      emit(',');
     }
     if (params.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit(")");
+    emit(')');
     nl(1);
     pp(ast['block']);
     nl(-1);
-    emit("end");
+    emit('end');
   },
   'param': (ast) {
     emit(ast.name);
     if (ast['init'] != null) {
-      emit("=");
+      emit('=');
       pp(ast['init']!);
     }
   },
   'restparam': (ast) {
-    emit("*");
+    emit('*');
     emit(ast.name);
   },
   'if': (ast) {
-    emit("if ");
+    emit('if ');
     pp(ast['expr']);
     nl(1);
     pp(ast['then']);
@@ -155,7 +155,7 @@ final rubyMethods = <String, Printer>{
       pp(ast['else']);
     }
     nl(-1);
-    emit("end");
+    emit('end');
   },
   '==': op('=='),
   '!=': op('!='),
@@ -175,17 +175,17 @@ final rubyMethods = <String, Printer>{
   'mcall': (ast) {
     if (ast['expr'] != null) {
       pp(ast['expr']!);
-      emit(".");
+      emit('.');
     }
     emit(ast.name);
-    emit("(");
+    emit('(');
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
       pp(arg);
-      emit(",");
+      emit(',');
     }
     if (args.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit(")");
+    emit(')');
     final block = ast['doblock'] as AST?;
     if (block != null) {
       pp(block);
@@ -193,17 +193,17 @@ final rubyMethods = <String, Printer>{
   },
   '[]': (ast) {
     pp(ast['expr']);
-    emit("[");
+    emit('[');
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
       pp(arg);
-      emit(",");
+      emit(',');
     }
     if (args.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit("]");
+    emit(']');
   },
   'case': (ast) {
-    emit("case ");
+    emit('case ');
     pp(ast['expr']);
     nl(1);
     final whens = ast['whens'] as List<AST>;
@@ -211,13 +211,13 @@ final rubyMethods = <String, Printer>{
       pp(when);
     }
     nl(-1);
-    emit("end");
+    emit('end');
   },
   'when': (ast) {
     emit('when ');
     for (final expr in ast['exprList'] as List<AST>) {
       pp(expr);
-      emit(",");
+      emit(',');
     }
     line = line.substring(0, line.length - 1);
     nl(1);
@@ -234,69 +234,69 @@ final rubyMethods = <String, Printer>{
         value = value.truncate();
       }
     }
-    emit("$value");
+    emit('$value');
   },
   'relit': (ast) {
     emit("/${ast['value']}/");
   },
   '::': (ast) {
     pp(ast['expr']);
-    emit("::");
+    emit('::');
     emit(ast.name);
   },
   'array': (ast) {
-    emit("[");
+    emit('[');
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
       pp(arg);
-      emit(",");
+      emit(',');
     }
     if (args.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit("]");
+    emit(']');
   },
   'not': (ast) {
-    emit("(!");
+    emit('(!');
     pp(ast['expr']);
-    emit(")");
+    emit(')');
   },
   'class': (ast) {
     emit('class ');
     emit(ast.name);
     if (ast['superclass'] != null) {
-      emit(" < ");
+      emit(' < ');
       pp(ast['superclass']!);
     }
     nl(1);
     pp(ast['block']);
     nl(-1);
-    emit("end");
+    emit('end');
   },
   'attr_accessor': (ast) {
     final symbols = ast['list'] as List<String>;
     for (final symbol in symbols) {
-      emit("def $symbol() @$symbol end");
+      emit('def $symbol() @$symbol end');
       nl();
-      emit("def $symbol=(obj) @$symbol=obj end");
+      emit('def $symbol=(obj) @$symbol=obj end');
       nl();
     }
   },
   'attr_reader': (ast) {
     final symbols = ast['list'] as List<String>;
     for (final symbol in symbols) {
-      emit("def $symbol() @$symbol end");
+      emit('def $symbol() @$symbol end');
       nl();
     }
   },
   'for': (ast) {
-    emit("for ");
+    emit('for ');
     pp(ast['target']);
-    emit(" in ");
+    emit(' in ');
     pp(ast['expr']);
-    emit(" do ");
+    emit(' do ');
     nl(1);
     pp(ast['block']);
     nl(-1);
-    emit("end");
+    emit('end');
   },
   '..': op('..'),
   '...': op('...'),
@@ -305,18 +305,18 @@ final rubyMethods = <String, Printer>{
   },
   '+=': (ast) {
     pp(ast['target']);
-    emit(" += ");
+    emit(' += ');
     pp(ast['expr']);
   },
   '-=': (ast) {
     pp(ast['target']);
-    emit(" -= ");
+    emit(' -= ');
     pp(ast['expr']);
   },
   'alias': (ast) {
-    emit("alias ");
+    emit('alias ');
     emit(":${ast['old']}");
-    emit(" ");
+    emit(' ');
     emit(":${ast['new']}");
   },
   'self': (ast) {
@@ -331,57 +331,57 @@ final rubyMethods = <String, Printer>{
     nl(1);
     pp(ast['block']);
     nl(-1);
-    emit("end");
-    emit(" while ");
+    emit('end');
+    emit(' while ');
     pp(ast['expr']);
   },
   'symbol': (ast) {
-    emit(":" + ast.name);
+    emit(':' + ast.name);
   },
   'while': (ast) {
-    emit("while ");
+    emit('while ');
     pp(ast['expr']);
-    emit(" do");
+    emit(' do');
     nl(1);
     pp(ast['block']);
     nl(-1);
-    emit("end");
+    emit('end');
   },
-  'break': (ast) => emit("break"),
-  'ensure': (ast) => emit("ensure"),
-  'rescue': (ast) => emit("rescue"),
+  'break': (ast) => emit('break'),
+  'ensure': (ast) => emit('ensure'),
+  'rescue': (ast) => emit('rescue'),
   'splat': (ast) {
-    emit("*");
+    emit('*');
     pp(ast['expr']);
   },
   '?:': (ast) {
-    emit("(");
+    emit('(');
     pp(ast['expr']);
-    emit(" ? ");
+    emit(' ? ');
     pp(ast['then']);
-    emit(" : ");
+    emit(' : ');
     pp(ast['else']);
-    emit(")");
+    emit(')');
   },
   'return': (ast) {
-    emit("return");
+    emit('return');
     if (ast['expr'] != null) {
-      emit(" ");
+      emit(' ');
       pp(ast['expr']);
     }
   },
   'neg': (ast) {
-    emit("(-");
+    emit('(-');
     pp(ast['expr']);
-    emit(")");
+    emit(')');
   },
   'module': (ast) {
-    emit("module ");
+    emit('module ');
     emit(ast.name);
     nl(1);
     pp(ast['block']);
     nl(-1);
-    emit("end");
+    emit('end');
   }
 };
 
@@ -396,21 +396,21 @@ void returnblock(AST ast, {bool ret = false}) {
     if (stmt.type == 'ensure') ensure = true;
   }
   if (rescue || ensure) {
-    emit("try {");
+    emit('try {');
     nl(1);
   }
   for (var i = 0; i < stmts.length; i++) {
     if (ret && i == stmts.length - 1 && !['for', 'if', 'block'].contains(stmts[i].type)) {
-      emit("return ");
+      emit('return ');
     }
     pp(stmts[i]);
-    if (!line.endsWith("}") && line.trim().isNotEmpty) {
-      emit(";");
+    if (!line.endsWith('}') && line.trim().isNotEmpty) {
+      emit(';');
     }
     nl();
   }
   if (rescue || ensure) {
-    emit("}");
+    emit('}');
     nl(-1);
   }
 }
@@ -420,7 +420,7 @@ void returnblock(AST ast, {bool ret = false}) {
  * Replaces a trailing `?` with `_Q`, a trailing `!` with `_B`, and a trailing `=` with `_E`.
  */
 String fixname(String name) {
-  return name.replaceFirst("?", "_Q").replaceFirst("!", "_B").replaceFirst("=", "_E");
+  return name.replaceFirst('?', '_Q').replaceFirst('!', '_B').replaceFirst('=', '_E');
 }
 
 String? className;
@@ -430,36 +430,36 @@ final dartMethods = <String, Printer>{
     final targetList = ast['targetList'] as List<AST>;
     final exprList = ast['exprList'] as List<AST>;
     if (exprList.length < targetList.length) {
-      emit("var ");
+      emit('var ');
       for (final target in targetList) {
         pp(target);
-        emit(",");
+        emit(',');
       }
       line = line.substring(0, line.length - 1);
-      emit(" = ");
+      emit(' = ');
       for (final expr in exprList) {
         pp(expr);
-        emit(",");
+        emit(',');
       }
       line = line.substring(0, line.length - 1);
       return;
     }
     for (var i = 0; i < targetList.length; i++) {
       if (targetList[i].type == 'var') {
-        emit("var ");
+        emit('var ');
       }
       pp(targetList[i]);
-      emit(" = ");
+      emit(' = ');
       pp(exprList[i]);
       if (i == targetList.length - 1) {
         if (exprList.length > targetList.length) {
           for (var j = i + 1; j < exprList.length; j++) {
-            emit(",");
+            emit(',');
             pp(exprList[j]);
           }
         }
       } else {
-        emit(";");
+        emit(';');
         nl();
       }
     }
@@ -468,27 +468,27 @@ final dartMethods = <String, Printer>{
     returnblock(ast);
   },
   'globalvar': (ast) {
-    emit("\$${ast.name}");
+    emit('\$${ast.name}');
   },
   'doblock': (ast) {
-    emit("(");
+    emit('(');
     final params = ast['params'] as List<AST>;
     for (final param in params) {
       pp(param);
-      emit(",");
+      emit(',');
     }
     if (params.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit(") {");
+    emit(') {');
     nl(1);
     returnblock(ast['block'], ret: true);
     nl(-1);
-    emit("}");
+    emit('}');
   },
   'var': (ast) {
     emit(fixname(ast.name));
   },
   'instvar': (ast) {
-    emit("this." + ast.name);
+    emit('this.' + ast.name);
   },
   'const': (ast) {
     emit(ast.name);
@@ -497,9 +497,9 @@ final dartMethods = <String, Printer>{
     if (ast['classname'] != null) {
       if (ast['classname'] != className) {
         emit(ast['classname'] as String);
-        emit(".");
+        emit('.');
       } else {
-        emit("static ");
+        emit('static ');
       }
     }
     if (ast.name == 'initialize' && className != null) {
@@ -507,39 +507,39 @@ final dartMethods = <String, Printer>{
     } else {
       emit(fixname(ast.name));
     }
-    emit("(");
+    emit('(');
     final params = ast['params'] as List<AST>;
     for (final param in params) {
       pp(param);
-      emit(",");
+      emit(',');
     }
     if (params.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit(") {");
+    emit(') {');
     nl(1);
-    returnblock(ast['block'], ret: ast.name != "initialize");
+    returnblock(ast['block'], ret: ast.name != 'initialize');
     nl(-1);
-    emit("}");
+    emit('}');
   },
   'param': (ast) {
     if (ast['init'] != null) {
-      emit("[");
+      emit('[');
       emit(ast.name);
-      emit("=");
+      emit('=');
       pp(ast['init']);
-      emit("]");
+      emit(']');
     } else {
       emit(ast.name);
     }
   },
   'restparam': (ast) {
     //TODO
-    emit("*");
+    emit('*');
     emit(ast.name);
   },
   'if': (ast) {
-    emit("if (");
+    emit('if (');
     pp(ast['expr']);
-    emit(") {");
+    emit(') {');
     nl(1);
     returnblock(ast['then']);
     if (ast['else'] != null) {
@@ -549,7 +549,7 @@ final dartMethods = <String, Printer>{
       returnblock(ast['else']);
     }
     nl(-1);
-    emit("}");
+    emit('}');
   },
   '==': op('=='),
   '!=': op('!='),
@@ -567,18 +567,18 @@ final dartMethods = <String, Printer>{
   '/': op('/'),
   '%': op('%'),
   'mcall': (ast) {
-    final isNew = ast.name == "new";
+    final isNew = ast.name == 'new';
     if (ast['expr'] != null) {
-      if (isNew) emit("new ");
+      if (isNew) emit('new ');
       pp(ast['expr']);
-      if (!isNew) emit(".");
+      if (!isNew) emit('.');
     }
     if (!isNew) emit(fixname(ast.name));
-    emit("(");
+    emit('(');
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
       pp(arg);
-      emit(",");
+      emit(',');
     }
     final block = ast['doblock'] as AST?;
     if (block != null) {
@@ -586,44 +586,44 @@ final dartMethods = <String, Printer>{
     } else {
       if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     }
-    emit(")");
+    emit(')');
   },
   '[]': (ast) {
     pp(ast['expr']);
-    emit("[");
+    emit('[');
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
       pp(arg);
-      emit(",");
+      emit(',');
     }
     if (args.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit("]");
+    emit(']');
   },
   'case': (ast) {
-    emit("switch (");
+    emit('switch (');
     pp(ast['expr']);
-    emit(") {");
+    emit(') {');
     nl(1);
     final whens = ast['whens'] as List<AST>;
     for (final when in whens) {
       pp(when);
     }
     nl(-1);
-    emit("}");
+    emit('}');
   },
   'when': (ast) {
     for (final expr in ast['exprList'] as List<AST>) {
       emit('case ');
       pp(expr);
-      emit(":");
+      emit(':');
       if (line == 'case true:') {
-        line = "default:";
+        line = 'default:';
       }
       nl();
     }
     nl(1);
     returnblock(ast['block']);
-    emit("break;");
+    emit('break;');
     nl();
     nl(-1);
   },
@@ -637,98 +637,98 @@ final dartMethods = <String, Printer>{
         value = value.truncate();
       }
     }
-    emit("$value");
+    emit('$value');
   },
   'relit': (ast) {
     emit("new RegExp(r\"${ast['value']}\")");
   },
   '::': (ast) {
     pp(ast['expr']);
-    emit(".");
+    emit('.');
     emit(ast.name);
   },
   'array': (ast) {
-    emit("new Array.from([");
+    emit('new Array.from([');
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
       pp(arg);
-      emit(",");
+      emit(',');
     }
     if (args.isNotEmpty) line = line.substring(0, line.length - 1);
-    emit("])");
+    emit('])');
   },
   'not': (ast) {
-    emit("(!");
+    emit('(!');
     pp(ast['expr']);
-    emit(")");
+    emit(')');
   },
   'class': (ast) {
     emit('class ');
     emit(ast.name);
     if (ast['superclass'] != null) {
-      emit(" extends ");
+      emit(' extends ');
       pp(ast['superclass']);
     }
-    emit(" {");
+    emit(' {');
     nl(1);
     className = ast.name;
     returnblock(ast['block']);
     className = null;
     nl(-1);
-    emit("}");
+    emit('}');
   },
   'attr_accessor': (ast) {
-    emit("var ");
+    emit('var ');
     final symbols = ast['list'] as List<String>;
     for (final symbol in symbols) {
-      emit("$symbol,");
+      emit('$symbol,');
     }
     line = line.substring(0, line.length - 1);
   },
   'attr_reader': (ast) {
-    emit("final ");
+    emit('final ');
     final symbols = ast['list'] as List<String>;
     for (final symbol in symbols) {
-      emit("$symbol,");
+      emit('$symbol,');
     }
     line = line.substring(0, line.length - 1);
   },
   'for': (ast) {
-    emit("for (");
+    emit('for (');
     pp(ast['target']);
-    emit(" in ");
+    emit(' in ');
     pp(ast['expr']);
-    emit(") {");
+    emit(') {');
     nl(1);
     returnblock(ast['block']);
     nl(-1);
-    emit("}");
+    emit('}');
   },
   '..': (ast) {
-    emit("new Range.incl(");
+    emit('new Range.incl(');
     pp(ast['left']);
-    emit(",");
+    emit(',');
     pp(ast['right']);
-    emit(")");
+    emit(')');
   },
   '...': (ast) {
-    emit("new Range.excl(");
+    emit('new Range.excl(');
     pp(ast['left']);
-    emit(",");
+    emit(',');
     pp(ast['right']);
-    emit(")");
+    emit(')');
   },
   'next': (ast) {
     emit('continue');
   },
   '+=': (ast) {
     pp(ast['target']);
-    emit(" += ");
+    emit(' += ');
     pp(ast['expr']);
   },
   '-=': (ast) {
     pp(ast['target']);
-    emit(" -= ");
+    emit(' -= ');
     pp(ast['expr']);
   },
   'alias': (ast) {},
@@ -744,70 +744,70 @@ final dartMethods = <String, Printer>{
     nl(1);
     returnblock(ast['block']);
     nl(-1);
-    emit("} while (");
+    emit('} while (');
     pp(ast['expr']);
-    emit(")");
+    emit(')');
   },
   'symbol': (ast) {
     emit("'${ast.name}'");
   },
   'while': (ast) {
-    emit("while (");
+    emit('while (');
     pp(ast['expr']);
-    emit(") {");
+    emit(') {');
     nl(1);
     returnblock(ast['block']);
     nl(-1);
-    emit("}");
+    emit('}');
   },
-  'break': (ast) => emit("break"),
+  'break': (ast) => emit('break'),
   'ensure': (ast) {
-    emit("}");
+    emit('}');
     nl(-1);
-    emit("finally {");
+    emit('finally {');
     nl(1);
   },
   'rescue': (ast) {
-    emit("}");
+    emit('}');
     nl(-1);
-    emit("catch (e) {");
+    emit('catch (e) {');
     nl(1);
   },
   'splat': (ast) {
-    emit("*");
+    emit('*');
     pp(ast['expr']);
   },
   '?:': (ast) {
-    emit("(");
+    emit('(');
     pp(ast['expr']);
-    emit(" ? ");
+    emit(' ? ');
     pp(ast['then']);
-    emit(" : ");
+    emit(' : ');
     pp(ast['else']);
-    emit(")");
+    emit(')');
   },
   'return': (ast) {
-    emit("return");
+    emit('return');
     if (ast['expr'] != null) {
-      emit(" ");
+      emit(' ');
       pp(ast['expr']);
     }
   },
   'neg': (ast) {
-    emit("(-");
+    emit('(-');
     pp(ast['expr']);
-    emit(")");
+    emit(')');
   },
   'module': (ast) {
     //TODO
-    emit("class ");
+    emit('class ');
     emit(ast.name);
-    emit(" {");
+    emit(' {');
     nl(1);
     className = ast.name;
     returnblock(ast['block']);
     className = null;
-    emit("}");
+    emit('}');
     nl(-1);
   }
 };

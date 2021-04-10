@@ -74,7 +74,7 @@ class Scanner {
    */
   void expect(String token) {
     if (!at(token)) {
-      throw error("expected $token, found $current");
+      throw error('expected $token, found $current');
     }
   }
 

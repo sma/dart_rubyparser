@@ -10,6 +10,6 @@ part 'printer.dart';
 void parse(File file) {
   final source = file.readAsStringSync();
   final parser = Parser(source);
-  print("----------$file--------------------------------------------------");
+  print('----------$file--------------------------------------------------');
   pp(parser.parse());
 }

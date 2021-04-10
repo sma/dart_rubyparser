@@ -37,7 +37,7 @@ class Parser extends Scanner {
    */
   AST parseStmt() {
     var stmt = parseSimpleStmt();
-    if (!eol && at("if")) {
+    if (!eol && at('if')) {
       final expr = parseExpr();
       stmt = AST({
         'type': 'if',
@@ -48,7 +48,7 @@ class Parser extends Scanner {
         }),
         'else': null
       });
-    } else if (!eol && at("unless")) {
+    } else if (!eol && at('unless')) {
       final expr = parseExpr();
       stmt = AST({
         'type': 'if',
@@ -72,59 +72,59 @@ class Parser extends Scanner {
    * TODO: rescue and ensure inside of begin/end aren't correctly recognized.
    */
   AST parseSimpleStmt() {
-    if (at("module")) {
+    if (at('module')) {
       final name = parseName();
       return AST({'type': 'module', 'name': name, 'block': parseBlock()});
     }
-    if (at("class")) {
+    if (at('class')) {
       return parseClassStmt();
     }
-    if (at("def")) {
+    if (at('def')) {
       return parseDefStmt();
     }
-    if (at("if")) {
+    if (at('if')) {
       return parseIfStmt();
     }
-    if (at("while")) {
+    if (at('while')) {
       return parseWhileStmt();
     }
-    if (at("break")) {
+    if (at('break')) {
       return AST({'type': 'break'});
     }
-    if (at("next")) {
+    if (at('next')) {
       return AST({'type': 'next'});
     }
-    if (at("return")) {
+    if (at('return')) {
       AST? expr;
-      if (!eol && current != "if" && current != "unless") {
+      if (!eol && current != 'if' && current != 'unless') {
         expr = parseExpr();
       }
       return AST({'type': 'return', 'expr': expr});
     }
-    if (at("for")) {
+    if (at('for')) {
       return parseForStmt();
     }
-    if (at("case")) {
+    if (at('case')) {
       return parseCaseStmt();
     }
-    if (at("alias")) {
+    if (at('alias')) {
       final oldSym = parseSymbol();
       final newSym = parseSymbol();
       return AST({'type': 'alias', 'old': oldSym, 'new': newSym});
     }
-    if (at("attr_reader")) {
+    if (at('attr_reader')) {
       return AST({'type': 'attr_reader', 'list': parseSymbolList()});
     }
-    if (at("attr_accessor")) {
+    if (at('attr_accessor')) {
       return AST({'type': 'attr_accessor', 'list': parseSymbolList()});
     }
-    if (at("begin")) {
+    if (at('begin')) {
       final block = parseBlock();
-      if (!eol && at("while")) {
+      if (!eol && at('while')) {
         final expr = parseExpr();
         return AST({'type': 'dowhile', 'expr': expr, 'block': block});
       }
-      if (!eol && at("until")) {
+      if (!eol && at('until')) {
         final expr = parseExpr();
         return AST({
           'type': 'dowhile',
@@ -134,11 +134,11 @@ class Parser extends Scanner {
       }
       return block;
     }
-    if (at("rescue")) {
+    if (at('rescue')) {
       // only inside begin
       return AST({'type': 'rescue'});
     }
-    if (at("ensure")) {
+    if (at('ensure')) {
       // only inside begin
       return AST({'type': 'ensure'});
     }
@@ -147,7 +147,7 @@ class Parser extends Scanner {
 
   AST parseClassStmt() {
     final name = parseName();
-    final superclass = at("<") ? parseExpr() : null;
+    final superclass = at('<') ? parseExpr() : null;
     return AST({'type': 'class', 'name': name, 'superclass': superclass, 'block': parseBlock()});
   }
 
@@ -155,15 +155,15 @@ class Parser extends Scanner {
     locals.add({});
     var name = consume(); // name or operator
     String? classname;
-    if (at(".")) {
+    if (at('.')) {
       classname = name;
       name = consume(); // name or operator
     }
     var params = <AST>[];
-    if (!eol && at("(")) {
-      if (!at(")")) {
+    if (!eol && at('(')) {
+      if (!at(')')) {
         params = parseParamList();
-        expect(")");
+        expect(')');
       }
     }
     final block = parseBlock();
@@ -173,16 +173,16 @@ class Parser extends Scanner {
 
   AST parseIfStmt() {
     final expr = parseExpr();
-    at("then"); // skip optional then
+    at('then'); // skip optional then
     AST? thenBlock;
     AST? elseBlock;
     var list = <AST>[];
-    while (!at("end")) {
-      if (at("elsif")) {
+    while (!at('end')) {
+      if (at('elsif')) {
         thenBlock = AST({'type': 'block', 'list': list});
         list = [parseIfStmt()];
         break;
-      } else if (at("else")) {
+      } else if (at('else')) {
         thenBlock = AST({'type': 'block', 'list': list});
         list = <AST>[];
       } else {
@@ -199,26 +199,26 @@ class Parser extends Scanner {
 
   AST parseWhileStmt() {
     final expr = parseExpr();
-    at("do"); // skip optional do
+    at('do'); // skip optional do
     return AST({'type': 'while', 'expr': expr, 'block': parseBlock()});
   }
 
   AST parseForStmt() {
     final target = parsePrimary(); // name of any kind
     trackLocal(target);
-    expect("in");
+    expect('in');
     final expr = parseExpr();
-    at("do"); // skip optional do
+    at('do'); // skip optional do
     return AST({'type': 'for', 'target': target, 'expr': expr, 'block': parseBlock()});
   }
 
   AST parseCaseStmt() {
     final expr = parseExpr();
     final whens = <AST>[];
-    while (at("when")) {
+    while (at('when')) {
       final whenExpr = parseExprAsList();
       final whenList = <AST>[];
-      while (current != "when" && current != "else" && current != "end") {
+      while (current != 'when' && current != 'else' && current != 'end') {
         whenList.add(parseStmt());
       }
       whens.add(AST({
@@ -227,7 +227,7 @@ class Parser extends Scanner {
         'block': AST({'type': 'block', 'list': whenList})
       }));
     }
-    if (at("else")) {
+    if (at('else')) {
       whens.add(AST({
         'type': 'when',
         'exprList': [
@@ -236,7 +236,7 @@ class Parser extends Scanner {
         'block': parseBlock(),
       }));
     } else {
-      expect("end");
+      expect('end');
     }
     return AST({'type': 'case', 'expr': expr, 'whens': whens});
   }
@@ -248,12 +248,12 @@ class Parser extends Scanner {
    */
   AST parseAssignment() {
     var expr = parseSimpleExpr();
-    if (at(",")) {
+    if (at(',')) {
       var targetList = <AST>[expr, parseSimpleExpr()];
-      while (at(",")) {
+      while (at(',')) {
         targetList.add(parseSimpleExpr());
       }
-      if (at("=")) {
+      if (at('=')) {
         targetList = targetList.map((expr) {
           if (expr.type == 'mcall' && expr['expr'] == null && (expr['args'] as List<AST>).isEmpty) {
             locals.last.add(expr.name);
@@ -267,7 +267,7 @@ class Parser extends Scanner {
       }
       return AST({'type': 'listexpr', 'list': targetList});
     }
-    if (at("=")) {
+    if (at('=')) {
       // `expr` might have become an implicit mcall but is simply a new local variable
       // or if it is an explicit mcall, it's really a setter and not an assignment
       // or if it is an array access, it's really a setter and not an assignment
@@ -275,7 +275,7 @@ class Parser extends Scanner {
         if (expr['expr'] == null && (expr['args'] as List<AST>).isEmpty) {
           expr = AST({'type': 'var', 'name': expr.name});
         } else if (expr['expr'] != null) {
-          expr.name += "=";
+          expr.name += '=';
           (expr['args'] as List<AST>).add(parseExpr());
           return expr;
         }
@@ -288,12 +288,12 @@ class Parser extends Scanner {
         'exprList': exprList
       });
     }
-    if (at("+=")) {
+    if (at('+=')) {
       if (expr.type == 'mcall') {
         return AST({
           'type': 'mcall',
           'expr': expr['expr'],
-          'name': expr.name + "=",
+          'name': expr.name + '=',
           'args': [
             AST({'type': '+', 'left': expr, 'right': parseExpr()}),
           ]
@@ -301,12 +301,12 @@ class Parser extends Scanner {
       }
       return AST({'type': '+=', 'target': expr, 'expr': parseExpr()});
     }
-    if (at("-=")) {
+    if (at('-=')) {
       if (expr.type == 'mcall') {
         return AST({
           'type': 'mcall',
           'expr': expr['expr'],
-          'name': expr.name + "=",
+          'name': expr.name + '=',
           'args': <AST>[
             AST({'type': '-', 'left': expr, 'right': parseExpr()}),
           ]
@@ -320,7 +320,7 @@ class Parser extends Scanner {
   /**
    * Parses a block of statements up to either `end` or the given [token].
    */
-  AST parseBlock([String token = "end"]) {
+  AST parseBlock([String token = 'end']) {
     final list = <AST>[];
     while (!at(token)) {
       list.add(parseStmt());
@@ -349,9 +349,9 @@ class Parser extends Scanner {
    */
   AST parseSimpleExpr() {
     var expr = parseRange();
-    if (at("?")) {
+    if (at('?')) {
       final thenExpr = parseSimpleExpr();
-      expect(":");
+      expect(':');
       final elseExpr = parseSimpleExpr();
       expr = AST({'type': '?:', 'expr': expr, 'then': thenExpr, 'else': elseExpr});
     }
@@ -360,10 +360,10 @@ class Parser extends Scanner {
 
   AST parseRange() {
     var expr = parseOr();
-    if (at("..")) {
+    if (at('..')) {
       expr = AST({'type': '..', 'left': expr, 'right': parseOr()});
     }
-    if (at("...")) {
+    if (at('...')) {
       expr = AST({'type': '...', 'left': expr, 'right': parseOr()});
     }
     return expr;
@@ -371,7 +371,7 @@ class Parser extends Scanner {
 
   AST parseOr() {
     var expr = parseAnd();
-    while (at("||")) {
+    while (at('||')) {
       expr = AST({'type': '||', 'left': expr, 'right': parseAnd()});
     }
     return expr;
@@ -379,7 +379,7 @@ class Parser extends Scanner {
 
   AST parseAnd() {
     var expr = parseLogic();
-    while (at("&&")) {
+    while (at('&&')) {
       expr = AST({'type': '&&', 'left': expr, 'right': parseLogic()});
     }
     return expr;
@@ -387,19 +387,19 @@ class Parser extends Scanner {
 
   AST parseLogic() {
     var expr = parseComp();
-    if (at("==")) {
+    if (at('==')) {
       expr = AST({'type': '==', 'left': expr, 'right': parseComp()});
     }
-    if (at("!=")) {
+    if (at('!=')) {
       expr = AST({'type': '!=', 'left': expr, 'right': parseComp()});
     }
-    if (at("<=>")) {
+    if (at('<=>')) {
       expr = AST({'type': '<=>', 'left': expr, 'right': parseComp()});
     }
-    if (at("===")) {
+    if (at('===')) {
       expr = AST({'type': '===', 'left': expr, 'right': parseComp()});
     }
-    if (at("=~")) {
+    if (at('=~')) {
       expr = AST({'type': '=~', 'left': expr, 'right': parseComp()});
     }
     return expr;
@@ -407,16 +407,16 @@ class Parser extends Scanner {
 
   AST parseComp() {
     var expr = parseShift();
-    if (at("<")) {
+    if (at('<')) {
       expr = AST({'type': '<', 'left': expr, 'right': parseShift()});
     }
-    if (at(">")) {
+    if (at('>')) {
       expr = AST({'type': '>', 'left': expr, 'right': parseShift()});
     }
-    if (at("<=")) {
+    if (at('<=')) {
       expr = AST({'type': '<=', 'left': expr, 'right': parseShift()});
     }
-    if (at(">=")) {
+    if (at('>=')) {
       expr = AST({'type': '>=', 'left': expr, 'right': parseShift()});
     }
     return expr;
@@ -424,7 +424,7 @@ class Parser extends Scanner {
 
   AST parseShift() {
     var expr = parseTerm();
-    while (at("<<")) {
+    while (at('<<')) {
       expr = AST({'type': '<<', 'left': expr, 'right': parseTerm()});
     }
     return expr;
@@ -432,10 +432,10 @@ class Parser extends Scanner {
 
   AST parseTerm() {
     var expr = parseFactor();
-    while (at("+")) {
+    while (at('+')) {
       expr = AST({'type': '+', 'left': expr, 'right': parseFactor()});
     }
-    while (at("-")) {
+    while (at('-')) {
       expr = AST({'type': '-', 'left': expr, 'right': parseFactor()});
     }
     return expr;
@@ -443,26 +443,26 @@ class Parser extends Scanner {
 
   AST parseFactor() {
     var expr = parseUnary();
-    while (at("*")) {
+    while (at('*')) {
       expr = AST({'type': '*', 'left': expr, 'right': parseUnary()});
     }
-    while (at("/")) {
+    while (at('/')) {
       expr = AST({'type': '/', 'left': expr, 'right': parseUnary()});
     }
-    while (at("%")) {
+    while (at('%')) {
       expr = AST({'type': '%', 'left': expr, 'right': parseUnary()});
     }
     return expr;
   }
 
   AST parseUnary() {
-    if (at("-")) {
+    if (at('-')) {
       return AST({'type': 'neg', 'expr': parseUnary()});
     }
-    if (at("!")) {
+    if (at('!')) {
       return AST({'type': 'not', 'expr': parseUnary()});
     }
-    if (at("*")) {
+    if (at('*')) {
       return AST({'type': 'splat', 'expr': parseUnary()});
     }
     return parsePostfix(parsePrimary());
@@ -479,20 +479,20 @@ class Parser extends Scanner {
       if (eol) {
         break;
       }
-      if (at("[")) {
+      if (at('[')) {
         final args = parseExprAsList();
-        expect("]");
+        expect(']');
         expr = AST({'type': '[]', 'expr': expr, 'args': args});
-      } else if (at("::")) {
+      } else if (at('::')) {
         expr = AST({'type': '::', 'expr': expr, 'name': parseName()});
-      } else if (at(".")) {
+      } else if (at('.')) {
         // <expr>.name(foo, ...) or <expr>.name foo, ...
         final name = parseName();
         List<AST> args;
-        if (at("(")) {
-          if (!at(")")) {
+        if (at('(')) {
+          if (!at(')')) {
             args = parseExprAsList();
-            expect(")");
+            expect(')');
           } else {
             args = [];
           }
@@ -502,15 +502,15 @@ class Parser extends Scanner {
           args = [];
         }
         expr = AST({'type': 'mcall', 'expr': expr, 'name': name, 'args': args});
-      } else if (at("(")) {
+      } else if (at('(')) {
         // <expr>(foo, ...)
         if (expr.type != 'var') {
-          throw error("expected var but found $expr");
+          throw error('expected var but found $expr');
         }
         List<AST> list;
-        if (!at(")")) {
+        if (!at(')')) {
           list = parseExprAsList();
-          expect(")");
+          expect(')');
         } else {
           list = [];
         }
@@ -518,16 +518,16 @@ class Parser extends Scanner {
       } else if (isPrimary()) {
         // <expr> foo, ...
         if (expr.type != 'var') {
-          throw error("expected var but found $expr");
+          throw error('expected var but found $expr');
         }
         final list = parseExprAsList();
         expr = AST({'type': 'mcall', 'expr': null, 'name': expr.name, 'args': list});
-      } else if (at("do")) {
+      } else if (at('do')) {
         // <expr> do ... end
-        expr = parseDoBlock(expr, "end");
-      } else if (at("{")) {
+        expr = parseDoBlock(expr, 'end');
+      } else if (at('{')) {
         // <expr> { ... }
-        expr = parseDoBlock(expr, "}");
+        expr = parseDoBlock(expr, '}');
       } else {
         break;
       }
@@ -548,13 +548,13 @@ class Parser extends Scanner {
    */
   AST parseDoBlock(AST expr, String token) {
     if (expr.type != 'mcall') {
-      throw error("expected mcall but found $expr");
+      throw error('expected mcall but found $expr');
     }
     locals.add({});
     List<AST> params;
-    if (at("|")) {
+    if (at('|')) {
       params = parseParamList();
-      expect("|");
+      expect('|');
     } else {
       params = [];
     }
@@ -571,7 +571,7 @@ class Parser extends Scanner {
     if (atEnd()) {
       return false;
     }
-    if (["nil", "true", "false", "self", "super", "["].contains(current)) {
+    if (['nil', 'true', 'false', 'self', 'super', '['].contains(current)) {
       return true;
     }
     if (isKeyword()) {
@@ -588,54 +588,54 @@ class Parser extends Scanner {
    * [var], [instvar], [globalvar], or some other expression node.
    */
   AST parsePrimary() {
-    if (at("(")) {
+    if (at('(')) {
       final expr = parseExpr();
-      expect(")");
+      expect(')');
       return expr;
     }
-    if (at("nil")) {
+    if (at('nil')) {
       return AST({'type': 'lit', 'value': null});
     }
-    if (at("true")) {
+    if (at('true')) {
       return AST({'type': 'lit', 'value': true});
     }
-    if (at("false")) {
+    if (at('false')) {
       return AST({'type': 'lit', 'value': false});
     }
-    if (at("self")) {
+    if (at('self')) {
       return AST({'type': 'self'});
     }
-    if (at("super")) {
+    if (at('super')) {
       //return AST({'type': 'super'});
       return AST({'type': 'var', 'name': 'super'}); // TODO so it can be mcalled
     }
-    if (at("[")) {
+    if (at('[')) {
       var list = <AST>[];
-      if (!at("]")) {
+      if (!at(']')) {
         list = parseExprAsList();
-        expect("]");
+        expect(']');
       }
       return AST({'type': 'array', 'args': list});
     }
 
-    if (at("return")) {
+    if (at('return')) {
       // TODO return as expression? Really?
       return AST({'type': 'return', 'expr': null});
     }
 
     if (atEnd()) {
-      throw error("unexpected end of input");
+      throw error('unexpected end of input');
     }
     if (isKeyword()) {
-      throw error("unexpected keyword $current");
+      throw error('unexpected keyword $current');
     }
-    if (RegExp(r"^\d+").hasMatch(current)) {
+    if (RegExp(r'^\d+').hasMatch(current)) {
       return AST({'type': 'lit', 'value': double.parse(consume())});
     }
-    if (RegExp(r"^[A-Z]").hasMatch(current)) {
+    if (RegExp(r'^[A-Z]').hasMatch(current)) {
       return AST({'type': 'const', 'name': consume()});
     }
-    if (RegExp(r"^[a-z_]").hasMatch(current)) {
+    if (RegExp(r'^[a-z_]').hasMatch(current)) {
       return AST({'type': 'var', 'name': consume()});
     }
     if (current[0] == '"' || current[0] == "'") {
@@ -655,7 +655,7 @@ class Parser extends Scanner {
     if (current[0] == ':') {
       return AST({'type': 'symbol', 'name': consume().substring(1)});
     }
-    throw error("expected primary but found $current");
+    throw error('expected primary but found $current');
   }
 
   /**
@@ -677,7 +677,7 @@ class Parser extends Scanner {
   List<AST> parseParamList() {
     final list = <AST>[];
     list.add(parseParam());
-    while (at(",")) {
+    while (at(',')) {
       list.add(parseParam());
     }
     return list;
@@ -688,14 +688,14 @@ class Parser extends Scanner {
    * Returns a [param] or [restparam] nodes.
    */
   AST parseParam() {
-    if (at("*")) {
+    if (at('*')) {
       final name = parseName();
       locals.last.add(name);
       return AST({'type': 'restparam', 'name': name});
     }
     final name = parseName();
     locals.last.add(name);
-    final init = at("=") ? parseExpr() : null;
+    final init = at('=') ? parseExpr() : null;
     return AST({'type': 'param', 'name': name, 'init': init});
   }
 
@@ -705,7 +705,7 @@ class Parser extends Scanner {
   List<String> parseSymbolList() {
     final list = <String>[];
     list.add(parseSymbol());
-    while (at(",")) {
+    while (at(',')) {
       list.add(parseSymbol());
     }
     return list;
@@ -716,10 +716,10 @@ class Parser extends Scanner {
    * (Symbols starts with a `:`)
    */
   String parseSymbol() {
-    if (RegExp(r"^:.").hasMatch(current)) {
+    if (RegExp(r'^:.').hasMatch(current)) {
       return consume().substring(1);
     }
-    throw error("expected symbol but found $current");
+    throw error('expected symbol but found $current');
   }
 
   /**
@@ -727,10 +727,10 @@ class Parser extends Scanner {
    * (Names start with a letter)
    */
   String parseName() {
-    if (RegExp(r"^\w").hasMatch(current)) {
+    if (RegExp(r'^\w').hasMatch(current)) {
       return consume();
     }
-    throw error("expected name but found $current");
+    throw error('expected name but found $current');
   }
 
   /**
