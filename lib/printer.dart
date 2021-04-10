@@ -36,8 +36,7 @@ void nl([int i = 0]) {
  * Prints the given [ast] by using the [Printer] functions from [dartMethods].
  */
 void pp(AST ast) {
-  final type = ast['type'] as String;
-  final printer = dartMethods[type];
+  final printer = dartMethods[ast.type];
   if (printer == null) {
     throw "missing printer function for $ast";
   }
@@ -85,7 +84,7 @@ final rubyMethods = <String, Printer>{
     }
   },
   'globalvar': (ast) {
-    emit("\$${ast['name']}");
+    emit("\$${ast.name}");
   },
   'doblock': (ast) {
     emit(" do");
@@ -105,21 +104,21 @@ final rubyMethods = <String, Printer>{
     nl(-1);
   },
   'var': (ast) {
-    emit(ast['name']);
+    emit(ast.name);
   },
   'instvar': (ast) {
-    emit("@" + ast['name']);
+    emit("@" + ast.name);
   },
   'const': (ast) {
-    emit(ast['name']);
+    emit(ast.name);
   },
   'def': (ast) {
     emit("def ");
     if (ast['classname'] != null) {
-      emit(ast['classname']);
+      emit(ast['classname'] as String);
       emit(".");
     }
-    emit(ast['name']);
+    emit(ast.name);
     emit("(");
     final params = ast['params'] as List<AST>;
     for (final param in params) {
@@ -134,7 +133,7 @@ final rubyMethods = <String, Printer>{
     emit("end");
   },
   'param': (ast) {
-    emit(ast['name']);
+    emit(ast.name);
     if (ast['init'] != null) {
       emit("=");
       pp(ast['init']!);
@@ -142,7 +141,7 @@ final rubyMethods = <String, Printer>{
   },
   'restparam': (ast) {
     emit("*");
-    emit(ast['name']);
+    emit(ast.name);
   },
   'if': (ast) {
     emit("if ");
@@ -178,7 +177,7 @@ final rubyMethods = <String, Printer>{
       pp(ast['expr']!);
       emit(".");
     }
-    emit(ast['name']);
+    emit(ast.name);
     emit("(");
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
@@ -243,7 +242,7 @@ final rubyMethods = <String, Printer>{
   '::': (ast) {
     pp(ast['expr']);
     emit("::");
-    emit(ast['name']);
+    emit(ast.name);
   },
   'array': (ast) {
     emit("[");
@@ -262,7 +261,7 @@ final rubyMethods = <String, Printer>{
   },
   'class': (ast) {
     emit('class ');
-    emit(ast['name']);
+    emit(ast.name);
     if (ast['superclass'] != null) {
       emit(" < ");
       pp(ast['superclass']!);
@@ -316,9 +315,9 @@ final rubyMethods = <String, Printer>{
   },
   'alias': (ast) {
     emit("alias ");
-    emit(":" + ast['old']);
+    emit(":${ast['old']}");
     emit(" ");
-    emit(":" + ast['new']);
+    emit(":${ast['new']}");
   },
   'self': (ast) {
     emit('self');
@@ -337,7 +336,7 @@ final rubyMethods = <String, Printer>{
     pp(ast['expr']);
   },
   'symbol': (ast) {
-    emit(":" + ast['name']);
+    emit(":" + ast.name);
   },
   'while': (ast) {
     emit("while ");
@@ -378,7 +377,7 @@ final rubyMethods = <String, Printer>{
   },
   'module': (ast) {
     emit("module ");
-    emit(ast['name']);
+    emit(ast.name);
     nl(1);
     pp(ast['block']);
     nl(-1);
@@ -393,15 +392,15 @@ void returnblock(AST ast, {bool ret = false}) {
   final stmts = ast['list'] as List<AST>;
   var rescue = false, ensure = false;
   for (final stmt in stmts) {
-    if (stmt['type'] == 'rescue') rescue = true;
-    if (stmt['type'] == 'ensure') ensure = true;
+    if (stmt.type == 'rescue') rescue = true;
+    if (stmt.type == 'ensure') ensure = true;
   }
   if (rescue || ensure) {
     emit("try {");
     nl(1);
   }
   for (var i = 0; i < stmts.length; i++) {
-    if (ret && i == stmts.length - 1 && !['for', 'if', 'block'].contains(stmts[i]['type'])) {
+    if (ret && i == stmts.length - 1 && !['for', 'if', 'block'].contains(stmts[i].type)) {
       emit("return ");
     }
     pp(stmts[i]);
@@ -446,7 +445,7 @@ final dartMethods = <String, Printer>{
       return;
     }
     for (var i = 0; i < targetList.length; i++) {
-      if (targetList[i]['type'] == 'var') {
+      if (targetList[i].type == 'var') {
         emit("var ");
       }
       pp(targetList[i]);
@@ -469,7 +468,7 @@ final dartMethods = <String, Printer>{
     returnblock(ast);
   },
   'globalvar': (ast) {
-    emit("\$${ast['name']}");
+    emit("\$${ast.name}");
   },
   'doblock': (ast) {
     emit("(");
@@ -486,27 +485,27 @@ final dartMethods = <String, Printer>{
     emit("}");
   },
   'var': (ast) {
-    emit(fixname(ast['name']));
+    emit(fixname(ast.name));
   },
   'instvar': (ast) {
-    emit("this." + ast['name']);
+    emit("this." + ast.name);
   },
   'const': (ast) {
-    emit(ast['name']);
+    emit(ast.name);
   },
   'def': (ast) {
     if (ast['classname'] != null) {
       if (ast['classname'] != className) {
-        emit(ast['classname']);
+        emit(ast['classname'] as String);
         emit(".");
       } else {
         emit("static ");
       }
     }
-    if (ast['name'] == 'initialize' && className != null) {
+    if (ast.name == 'initialize' && className != null) {
       emit(className!);
     } else {
-      emit(fixname(ast['name']));
+      emit(fixname(ast.name));
     }
     emit("(");
     final params = ast['params'] as List<AST>;
@@ -517,25 +516,25 @@ final dartMethods = <String, Printer>{
     if (params.isNotEmpty) line = line.substring(0, line.length - 1);
     emit(") {");
     nl(1);
-    returnblock(ast['block'], ret: ast['name'] != "initialize");
+    returnblock(ast['block'], ret: ast.name != "initialize");
     nl(-1);
     emit("}");
   },
   'param': (ast) {
     if (ast['init'] != null) {
       emit("[");
-      emit(ast['name']);
+      emit(ast.name);
       emit("=");
       pp(ast['init']);
       emit("]");
     } else {
-      emit(ast['name']);
+      emit(ast.name);
     }
   },
   'restparam': (ast) {
     //TODO
     emit("*");
-    emit(ast['name']);
+    emit(ast.name);
   },
   'if': (ast) {
     emit("if (");
@@ -568,13 +567,13 @@ final dartMethods = <String, Printer>{
   '/': op('/'),
   '%': op('%'),
   'mcall': (ast) {
-    final isNew = ast['name'] == "new";
+    final isNew = ast.name == "new";
     if (ast['expr'] != null) {
       if (isNew) emit("new ");
       pp(ast['expr']);
       if (!isNew) emit(".");
     }
-    if (!isNew) emit(fixname(ast['name']));
+    if (!isNew) emit(fixname(ast.name));
     emit("(");
     final args = ast['args'] as List<AST>;
     for (final arg in args) {
@@ -646,7 +645,7 @@ final dartMethods = <String, Printer>{
   '::': (ast) {
     pp(ast['expr']);
     emit(".");
-    emit(ast['name']);
+    emit(ast.name);
   },
   'array': (ast) {
     emit("new Array.from([");
@@ -665,14 +664,14 @@ final dartMethods = <String, Printer>{
   },
   'class': (ast) {
     emit('class ');
-    emit(ast['name']);
+    emit(ast.name);
     if (ast['superclass'] != null) {
       emit(" extends ");
       pp(ast['superclass']);
     }
     emit(" {");
     nl(1);
-    className = ast['name'] as String;
+    className = ast.name;
     returnblock(ast['block']);
     className = null;
     nl(-1);
@@ -750,7 +749,7 @@ final dartMethods = <String, Printer>{
     emit(")");
   },
   'symbol': (ast) {
-    emit("'${ast['name']}'");
+    emit("'${ast.name}'");
   },
   'while': (ast) {
     emit("while (");
@@ -802,10 +801,10 @@ final dartMethods = <String, Printer>{
   'module': (ast) {
     //TODO
     emit("class ");
-    emit(ast['name']);
+    emit(ast.name);
     emit(" {");
     nl(1);
-    className = ast['name'] as String;
+    className = ast.name;
     returnblock(ast['block']);
     className = null;
     emit("}");

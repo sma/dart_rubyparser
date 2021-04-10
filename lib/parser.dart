@@ -6,7 +6,11 @@ class AST {
   final Map<String, dynamic> map;
   dynamic operator [](String key) => map[key];
   operator []=(String key, Object? value) => map[key] = value;
+
   String get type => map['type'] as String;
+
+  String get name => map['name'] as String;
+  set name(String name) => map['name'] = name;
 }
 
 class Parser extends Scanner {
@@ -251,9 +255,9 @@ class Parser extends Scanner {
       }
       if (at("=")) {
         targetList = targetList.map((expr) {
-          if (expr['type'] == 'mcall' && expr['expr'] == null && expr['args'].length == 0) {
-            locals.last.add(expr['name'] as String);
-            return AST({'type': 'var', 'name': expr['name']});
+          if (expr.type == 'mcall' && expr['expr'] == null && (expr['args'] as List<AST>).isEmpty) {
+            locals.last.add(expr.name);
+            return AST({'type': 'var', 'name': expr.name});
           } else {
             return expr;
           }
@@ -267,12 +271,12 @@ class Parser extends Scanner {
       // `expr` might have become an implicit mcall but is simply a new local variable
       // or if it is an explicit mcall, it's really a setter and not an assignment
       // or if it is an array access, it's really a setter and not an assignment
-      if (expr['type'] == 'mcall') {
-        if (expr['expr'] == null && expr['args'].length == 0) {
-          expr = AST({'type': 'var', 'name': expr['name']});
+      if (expr.type == 'mcall') {
+        if (expr['expr'] == null && (expr['args'] as List<AST>).isEmpty) {
+          expr = AST({'type': 'var', 'name': expr.name});
         } else if (expr['expr'] != null) {
-          expr['name'] += "=";
-          expr['args'].add(parseExpr());
+          expr.name += "=";
+          (expr['args'] as List<AST>).add(parseExpr());
           return expr;
         }
       }
@@ -285,11 +289,11 @@ class Parser extends Scanner {
       });
     }
     if (at("+=")) {
-      if (expr['type'] == 'mcall') {
+      if (expr.type == 'mcall') {
         return AST({
           'type': 'mcall',
           'expr': expr['expr'],
-          'name': expr['name'] + "=",
+          'name': expr.name + "=",
           'args': [
             AST({'type': '+', 'left': expr, 'right': parseExpr()}),
           ]
@@ -298,11 +302,11 @@ class Parser extends Scanner {
       return AST({'type': '+=', 'target': expr, 'expr': parseExpr()});
     }
     if (at("-=")) {
-      if (expr['type'] == 'mcall') {
+      if (expr.type == 'mcall') {
         return AST({
           'type': 'mcall',
           'expr': expr['expr'],
-          'name': expr['name'] + "=",
+          'name': expr.name + "=",
           'args': <AST>[
             AST({'type': '-', 'left': expr, 'right': parseExpr()}),
           ]
@@ -500,7 +504,7 @@ class Parser extends Scanner {
         expr = AST({'type': 'mcall', 'expr': expr, 'name': name, 'args': args});
       } else if (at("(")) {
         // <expr>(foo, ...)
-        if (expr['type'] != 'var') {
+        if (expr.type != 'var') {
           throw error("expected var but found $expr");
         }
         List<AST> list;
@@ -510,14 +514,14 @@ class Parser extends Scanner {
         } else {
           list = [];
         }
-        expr = AST({'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list});
+        expr = AST({'type': 'mcall', 'expr': null, 'name': expr.name, 'args': list});
       } else if (isPrimary()) {
         // <expr> foo, ...
-        if (expr['type'] != 'var') {
+        if (expr.type != 'var') {
           throw error("expected var but found $expr");
         }
         final list = parseExprAsList();
-        expr = AST({'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list});
+        expr = AST({'type': 'mcall', 'expr': null, 'name': expr.name, 'args': list});
       } else if (at("do")) {
         // <expr> do ... end
         expr = parseDoBlock(expr, "end");
@@ -528,9 +532,9 @@ class Parser extends Scanner {
         break;
       }
     }
-    if (expr['type'] == 'var') {
+    if (expr.type == 'var') {
       // for variables that aren't local vars assume a method call
-      final name = expr['name'] as String;
+      final name = expr.name;
       if (!isLocal(name)) {
         expr = AST({'type': 'mcall', 'expr': null, 'name': name, 'args': <AST>[]});
       }
@@ -543,7 +547,7 @@ class Parser extends Scanner {
    * Returns a [doblock] node.
    */
   AST parseDoBlock(AST expr, String token) {
-    if (expr['type'] != 'mcall') {
+    if (expr.type != 'mcall') {
       throw error("expected mcall but found $expr");
     }
     locals.add({});
@@ -660,7 +664,7 @@ class Parser extends Scanner {
    */
   List<AST> parseExprAsList() {
     final expr = parseExpr();
-    if (expr['type'] == 'listexpr') {
+    if (expr.type == 'listexpr') {
       return expr['list'] as List<AST>;
     }
     return [expr];
@@ -733,8 +737,8 @@ class Parser extends Scanner {
    * Tracks a local variable if the given AST node is one.
    */
   void trackLocal(AST ast) {
-    if (ast['type'] == 'var') {
-      locals.last.add(ast['name'] as String);
+    if (ast.type == 'var') {
+      locals.last.add(ast.name);
     }
   }
 
