@@ -2,25 +2,26 @@
 part of rubyparser;
 
 class Scanner {
-  Iterator<Match> matches;
-  String current;
-  bool eol;
-
-  Scanner(String source) {
-    final re = r'\n|;|[ \r\t]+|#.*$|('          // whitespace & comments
-        r'\d+(?:\.\d+)?|'                       // numbers
-        r'[@$]?\w+[?!]?|'                       // names
-        r':(?:\w+|[-+*/%<>=!&|]+)|'             // symbols
-        r'''"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|''' // strings
-        r'/ /|/[^/ ](?:\\.|[^/])*?/|'           // regular expression
-        r'<=>|<<|=~|[-+*/%<>!=]=?|'             // operators
-        r'::|&&|\|\||\.\.\.?|'                  // operators
-        r'[.,()\[\]|{}?:]'                      // syntax
-        r')|(.)';                               // catch illegal character
-    matches = RegExp(re, multiLine: true).allMatches(source).iterator;
+  Scanner(String source) : matches = RegExp(re, multiLine: true).allMatches(source).iterator {
     current = next();
-    eol = true;
   }
+
+  final Iterator<Match> matches;
+  String current = EOF;
+  bool eol = false;
+
+  static const EOF = '';
+
+  static const re = r'\n|;|[ \r\t]+|#.*$|(' //   whitespace & comments
+      r'\d+(?:\.\d+)?|' //                       numbers
+      r'[@$]?\w+[?!]?|' //                       names
+      r':(?:\w+|[-+*/%<>=!&|]+)|' //             symbols
+      r'''"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|''' // strings
+      r'/ /|/[^/ ](?:\\.|[^/])*?/|' //           regular expression
+      r'<=>|<<|=~|[-+*/%<>!=]=?|' //             operators
+      r'::|&&|\|\||\.\.\.?|' //                  operators
+      r'[.,()\[\]|{}?:]' //                      syntax
+      r')|(.)'; //                               catch illegal character
 
   /**
    * Throws a scanner or parser error.
@@ -39,28 +40,28 @@ class Scanner {
         throw error("invalid character '«${matches.current[2]}»");
       }
       if (matches.current[1] != null) {
-        return matches.current[1];
+        return matches.current[1]!;
       }
       if (matches.current[0] == ';' || matches.current[0] == '\n') {
         eol = true;
       }
       return next();
     }
-    return null;
+    return EOF;
   }
 
   /**
    * Returns `true` if the end of the input was reached and `false` otherwise.
    */
   bool atEnd() {
-    return current == null;
+    return current == EOF;
   }
 
   /**
    * Returns `true` if the current token is equal to the given one and consumes it.
    * Otherwise the method returns `false` and doesn't consume the current token.
    */
-  bool at(token) {
+  bool at(String token) {
     if (current == token) {
       consume();
       return true;
@@ -71,7 +72,7 @@ class Scanner {
   /**
    * Consumes the current token if it equal to the given one or throws an error.
    */
-  void expect(token) {
+  void expect(String token) {
     if (!at(token)) {
       throw error("expected $token, found $current");
     }
@@ -88,9 +89,10 @@ class Scanner {
     return value;
   }
 
-  static final Set<String> KEYWORDS = Set.of(
-      'alias and begin break case class def defined? do else elsif end ensure false for if in module next nil '
-      'not or redo rescue retry return self super then true undef unless until when while yield'.split(' '));
+  static final KEYWORDS =
+      Set.of('alias and begin break case class def defined? do else elsif end ensure false for if in module next nil '
+              'not or redo rescue retry return self super then true undef unless until when while yield'
+          .split(' '));
 
   /**
    * Returns `true` if the current token is a reserved keyword and `false` otherwise.

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:rubyparser/rubyparser.dart';
 
 void main() {
-  for (File file in Directory("rb").listSync()) {
+  for (final file in Directory("rb").listSync().whereType<File>()) {
     parse(file);
   }
 }

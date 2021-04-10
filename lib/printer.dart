@@ -19,7 +19,7 @@ void emit(String s) {
  * If [i] is < 0, the current line is dedented.
  * If [i] is > 0, the next line is indented.
  */
-void nl([i=0]) {
+void nl([int i = 0]) {
   if (i < 0) {
     indent = indent.substring(0, indent.length - 2);
   }
@@ -35,11 +35,11 @@ void nl([i=0]) {
 /**
  * Prints the given [ast] by using the [Printer] functions from [dartMethods].
  */
-void pp(Map ast) {
-  final String type = ast['type'];
+void pp(AST ast) {
+  final type = ast['type'] as String;
   final printer = dartMethods[type];
   if (printer == null) {
-    throw "missing printer functino for $ast";
+    throw "missing printer function for $ast";
   }
   printer(ast);
 }
@@ -47,14 +47,14 @@ void pp(Map ast) {
 /**
  * Defines a function that gets an AST node.
  */
-typedef Printer = void Function(Map ast);
+typedef Printer = void Function(AST ast);
 
 /**
  * Returns a printer function for the binary operator [op].
  * It will recursively print the left and right expressions, in parenthesis, separated by [op].
  */
 Printer op(String op) {
-  return (Map ast) {
+  return (ast) {
     emit("(");
     pp(ast['left']);
     emit(" $op ");
@@ -63,37 +63,37 @@ Printer op(String op) {
   };
 }
 
-Map<String, Printer> rubyMethods = {
-   'assignment': (Map ast) {
-     for (Map target in ast['targetList']) {
-       pp(target);
-       emit(",");
-     }
-     line = line.substring(0, line.length-1);
-     emit(" = ");
-     for (Map expr in ast['exprList']) {
-       pp(expr);
+final rubyMethods = <String, Printer>{
+  'assignment': (ast) {
+    for (AST target in ast['targetList']) {
+      pp(target);
       emit(",");
-     }
-     line = line.substring(0, line.length-1);
-   },
-  'block': (Map ast) {
-    final List/*<Map>*/ list = ast['list'];
-    for (var stmt in list) {
+    }
+    line = line.substring(0, line.length - 1);
+    emit(" = ");
+    for (AST expr in ast['exprList']) {
+      pp(expr);
+      emit(",");
+    }
+    line = line.substring(0, line.length - 1);
+  },
+  'block': (ast) {
+    final list = ast['list'] as List<AST>;
+    for (final stmt in list) {
       pp(stmt);
       nl();
     }
   },
-  'globalvar': (Map ast) {
+  'globalvar': (ast) {
     emit("\$${ast['name']}");
   },
-  'doblock': (Map ast) {
+  'doblock': (ast) {
     emit(" do");
     nl(1);
-    final List/*<Map>*/ params = ast['params'];
+    final params = ast['params'] as List<AST>;
     if (params.isNotEmpty) {
       emit("|");
-      for (var param in params) {
+      for (final param in params) {
         emit(" ");
         pp(param);
       }
@@ -104,16 +104,16 @@ Map<String, Printer> rubyMethods = {
     emit("end");
     nl(-1);
   },
-  'var': (Map ast) {
+  'var': (ast) {
     emit(ast['name']);
   },
-  'instvar': (Map ast) {
+  'instvar': (ast) {
     emit("@" + ast['name']);
   },
-  'const': (Map ast) {
+  'const': (ast) {
     emit(ast['name']);
   },
-  'def': (Map ast) {
+  'def': (ast) {
     emit("def ");
     if (ast['classname'] != null) {
       emit(ast['classname']);
@@ -121,30 +121,30 @@ Map<String, Printer> rubyMethods = {
     }
     emit(ast['name']);
     emit("(");
-    final List/*<Map>*/ params = ast['params'];
-    for (var param in params) {
+    final params = ast['params'] as List<AST>;
+    for (final param in params) {
       pp(param);
       emit(",");
     }
-    if (params.isNotEmpty) line = line.substring(0, line.length-1);
+    if (params.isNotEmpty) line = line.substring(0, line.length - 1);
     emit(")");
     nl(1);
     pp(ast['block']);
     nl(-1);
     emit("end");
   },
-  'param': (Map ast) {
+  'param': (ast) {
     emit(ast['name']);
     if (ast['init'] != null) {
       emit("=");
-      pp(ast['init']);
+      pp(ast['init']!);
     }
   },
-  'restparam': (Map ast) {
+  'restparam': (ast) {
     emit("*");
     emit(ast['name']);
   },
-  'if': (Map ast) {
+  'if': (ast) {
     emit("if ");
     pp(ast['expr']);
     nl(1);
@@ -173,60 +173,60 @@ Map<String, Printer> rubyMethods = {
   '*': op('*'),
   '/': op('/'),
   '%': op('%'),
-  'mcall': (Map ast) {
+  'mcall': (ast) {
     if (ast['expr'] != null) {
-      pp(ast['expr']);
+      pp(ast['expr']!);
       emit(".");
     }
     emit(ast['name']);
     emit("(");
-    final List/*<Map>*/ args = ast['args'];
-    for (var arg in args) {
+    final args = ast['args'] as List<AST>;
+    for (final arg in args) {
       pp(arg);
       emit(",");
     }
-    if (args.isNotEmpty) line = line.substring(0, line.length-1);
+    if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     emit(")");
-    final block = ast['doblock'];
+    final block = ast['doblock'] as AST?;
     if (block != null) {
       pp(block);
     }
   },
-  '[]': (Map ast) {
+  '[]': (ast) {
     pp(ast['expr']);
     emit("[");
-    final List/*<Map>*/ args = ast['args'];
-    for (var arg in args) {
+    final args = ast['args'] as List<AST>;
+    for (final arg in args) {
       pp(arg);
       emit(",");
     }
-    if (args.isNotEmpty) line = line.substring(0, line.length-1);
+    if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     emit("]");
   },
-  'case': (Map ast) {
+  'case': (ast) {
     emit("case ");
     pp(ast['expr']);
     nl(1);
-    final List/*<Map>*/ whens = ast['whens'];
-    for (var when in whens) {
+    final whens = ast['whens'] as List<AST>;
+    for (final when in whens) {
       pp(when);
     }
     nl(-1);
     emit("end");
   },
-  'when': (Map ast) {
+  'when': (ast) {
     emit('when ');
-    for (var expr in ast['exprList']) {
+    for (final expr in ast['exprList'] as List<AST>) {
       pp(expr);
       emit(",");
     }
-    line = line.substring(0, line.length-1);
+    line = line.substring(0, line.length - 1);
     nl(1);
     pp(ast['block']);
     nl(-1);
   },
-  'lit': (Map ast) {
-    var value = ast['value'];
+  'lit': (ast) {
+    Object? value = ast['value'];
     if (value is String) {
       value = '"${value.replaceAll('"', '\\"')}"';
     }
@@ -237,55 +237,58 @@ Map<String, Printer> rubyMethods = {
     }
     emit("$value");
   },
-  'relit': (Map ast) {
+  'relit': (ast) {
     emit("/${ast['value']}/");
   },
-  '::': (Map ast) {
+  '::': (ast) {
     pp(ast['expr']);
     emit("::");
     emit(ast['name']);
   },
-  'array': (Map ast) {
+  'array': (ast) {
     emit("[");
-    final List/*<Map>*/ args = ast['args'];
-    for (var arg in args) {
+    final args = ast['args'] as List<AST>;
+    for (final arg in args) {
       pp(arg);
       emit(",");
     }
-    if (args.isNotEmpty) line = line.substring(0, line.length-1);
+    if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     emit("]");
   },
-  'not': (Map ast) {
+  'not': (ast) {
     emit("(!");
     pp(ast['expr']);
     emit(")");
   },
-  'class': (Map ast) {
+  'class': (ast) {
     emit('class ');
     emit(ast['name']);
     if (ast['superclass'] != null) {
       emit(" < ");
-      pp(ast['superclass']);
+      pp(ast['superclass']!);
     }
     nl(1);
     pp(ast['block']);
     nl(-1);
     emit("end");
   },
-  'attr_accessor': (Map ast) {
-    final List<String> symbols = ast['list'];
-    for (var symbol in symbols) {
-      emit("def $symbol() @$symbol end"); nl();
-      emit("def $symbol=(obj) @$symbol=obj end"); nl();
+  'attr_accessor': (ast) {
+    final symbols = ast['list'] as List<String>;
+    for (final symbol in symbols) {
+      emit("def $symbol() @$symbol end");
+      nl();
+      emit("def $symbol=(obj) @$symbol=obj end");
+      nl();
     }
   },
-  'attr_reader': (Map ast) {
-    final List<String> symbols = ast['list'];
-    for (var symbol in symbols) {
-      emit("def $symbol() @$symbol end"); nl();
+  'attr_reader': (ast) {
+    final symbols = ast['list'] as List<String>;
+    for (final symbol in symbols) {
+      emit("def $symbol() @$symbol end");
+      nl();
     }
   },
-  'for': (Map ast) {
+  'for': (ast) {
     emit("for ");
     pp(ast['target']);
     emit(" in ");
@@ -298,33 +301,33 @@ Map<String, Printer> rubyMethods = {
   },
   '..': op('..'),
   '...': op('...'),
-  'next': (Map ast) {
+  'next': (ast) {
     emit('exit');
   },
-  '+=': (Map ast) {
+  '+=': (ast) {
     pp(ast['target']);
     emit(" += ");
     pp(ast['expr']);
   },
-  '-=': (Map ast) {
+  '-=': (ast) {
     pp(ast['target']);
     emit(" -= ");
     pp(ast['expr']);
   },
-  'alias': (Map ast) {
+  'alias': (ast) {
     emit("alias ");
     emit(":" + ast['old']);
     emit(" ");
     emit(":" + ast['new']);
   },
-  'self': (Map ast) {
+  'self': (ast) {
     emit('self');
   },
-  'super': (Map ast) {
+  'super': (ast) {
     emit('super');
   },
   '<=>': op('<=>'),
-  'dowhile': (Map ast) {
+  'dowhile': (ast) {
     emit('begin');
     nl(1);
     pp(ast['block']);
@@ -333,10 +336,10 @@ Map<String, Printer> rubyMethods = {
     emit(" while ");
     pp(ast['expr']);
   },
-  'symbol': (Map ast) {
+  'symbol': (ast) {
     emit(":" + ast['name']);
   },
-  'while': (Map ast) {
+  'while': (ast) {
     emit("while ");
     pp(ast['expr']);
     emit(" do");
@@ -345,14 +348,14 @@ Map<String, Printer> rubyMethods = {
     nl(-1);
     emit("end");
   },
-  'break': (Map ast) => emit("break"),
-  'ensure': (Map ast) => emit("ensure"),
-  'rescue': (Map ast) => emit("rescue"),
-  'splat': (Map ast) {
+  'break': (ast) => emit("break"),
+  'ensure': (ast) => emit("ensure"),
+  'rescue': (ast) => emit("rescue"),
+  'splat': (ast) {
     emit("*");
     pp(ast['expr']);
   },
-  '?:': (Map ast) {
+  '?:': (ast) {
     emit("(");
     pp(ast['expr']);
     emit(" ? ");
@@ -361,19 +364,19 @@ Map<String, Printer> rubyMethods = {
     pp(ast['else']);
     emit(")");
   },
-  'return': (Map ast) {
+  'return': (ast) {
     emit("return");
     if (ast['expr'] != null) {
       emit(" ");
       pp(ast['expr']);
     }
   },
-  'neg': (Map ast) {
+  'neg': (ast) {
     emit("(-");
     pp(ast['expr']);
     emit(")");
   },
-  'module': (Map ast) {
+  'module': (ast) {
     emit("module ");
     emit(ast['name']);
     nl(1);
@@ -386,10 +389,10 @@ Map<String, Printer> rubyMethods = {
 /**
  * Emits a block with an optional return statment for the last statement.
  */
-void returnblock(ast, {ret = false}) {
-  final List stmts = ast['list'];
+void returnblock(AST ast, {bool ret = false}) {
+  final stmts = ast['list'] as List<AST>;
   var rescue = false, ensure = false;
-  for (var stmt in stmts) {
+  for (final stmt in stmts) {
     if (stmt['type'] == 'rescue') rescue = true;
     if (stmt['type'] == 'ensure') ensure = true;
   }
@@ -421,25 +424,25 @@ String fixname(String name) {
   return name.replaceFirst("?", "_Q").replaceFirst("!", "_B").replaceFirst("=", "_E");
 }
 
-String className;
+String? className;
 
-Map<String, Printer> dartMethods = {
-  'assignment': (Map ast) {
-    final List/*<Map>*/ targetList = ast['targetList'];
-    final List/*<Map>*/ exprList = ast['exprList'];
+final dartMethods = <String, Printer>{
+  'assignment': (ast) {
+    final targetList = ast['targetList'] as List<AST>;
+    final exprList = ast['exprList'] as List<AST>;
     if (exprList.length < targetList.length) {
       emit("var ");
-      for (var target in targetList) {
+      for (final target in targetList) {
         pp(target);
         emit(",");
       }
-      line = line.substring(0, line.length-1);
+      line = line.substring(0, line.length - 1);
       emit(" = ");
-      for (var expr in exprList) {
+      for (final expr in exprList) {
         pp(expr);
         emit(",");
       }
-      line = line.substring(0, line.length-1);
+      line = line.substring(0, line.length - 1);
       return;
     }
     for (var i = 0; i < targetList.length; i++) {
@@ -462,36 +465,36 @@ Map<String, Printer> dartMethods = {
       }
     }
   },
-  'block': (Map ast) {
+  'block': (ast) {
     returnblock(ast);
   },
-  'globalvar': (Map ast) {
+  'globalvar': (ast) {
     emit("\$${ast['name']}");
   },
-  'doblock': (Map ast) {
+  'doblock': (ast) {
     emit("(");
-    final List/*<Map>*/ params = ast['params'];
-    for (var param in params) {
+    final params = ast['params'] as List<AST>;
+    for (final param in params) {
       pp(param);
       emit(",");
     }
-    if (params.isNotEmpty) line = line.substring(0, line.length-1);
+    if (params.isNotEmpty) line = line.substring(0, line.length - 1);
     emit(") {");
     nl(1);
     returnblock(ast['block'], ret: true);
     nl(-1);
     emit("}");
   },
-  'var': (Map ast) {
+  'var': (ast) {
     emit(fixname(ast['name']));
   },
-  'instvar': (Map ast) {
+  'instvar': (ast) {
     emit("this." + ast['name']);
   },
-  'const': (Map ast) {
+  'const': (ast) {
     emit(ast['name']);
   },
-  'def': (Map ast) {
+  'def': (ast) {
     if (ast['classname'] != null) {
       if (ast['classname'] != className) {
         emit(ast['classname']);
@@ -501,24 +504,24 @@ Map<String, Printer> dartMethods = {
       }
     }
     if (ast['name'] == 'initialize' && className != null) {
-      emit(className);
+      emit(className!);
     } else {
       emit(fixname(ast['name']));
     }
     emit("(");
-    final List params = ast['params'];
-    for (var param in params) {
+    final params = ast['params'] as List<AST>;
+    for (final param in params) {
       pp(param);
       emit(",");
     }
-    if (params.isNotEmpty) line = line.substring(0, line.length-1);
+    if (params.isNotEmpty) line = line.substring(0, line.length - 1);
     emit(") {");
     nl(1);
     returnblock(ast['block'], ret: ast['name'] != "initialize");
     nl(-1);
     emit("}");
   },
-  'param': (Map ast) {
+  'param': (ast) {
     if (ast['init'] != null) {
       emit("[");
       emit(ast['name']);
@@ -529,11 +532,12 @@ Map<String, Printer> dartMethods = {
       emit(ast['name']);
     }
   },
-  'restparam': (Map ast) { //TODO
+  'restparam': (ast) {
+    //TODO
     emit("*");
     emit(ast['name']);
   },
-  'if': (Map ast) {
+  'if': (ast) {
     emit("if (");
     pp(ast['expr']);
     emit(") {");
@@ -563,7 +567,7 @@ Map<String, Printer> dartMethods = {
   '*': op('*'),
   '/': op('/'),
   '%': op('%'),
-  'mcall': (Map ast) {
+  'mcall': (ast) {
     final isNew = ast['name'] == "new";
     if (ast['expr'] != null) {
       if (isNew) emit("new ");
@@ -572,44 +576,44 @@ Map<String, Printer> dartMethods = {
     }
     if (!isNew) emit(fixname(ast['name']));
     emit("(");
-    final List/*<Map>*/ args = ast['args'];
-    for (var arg in args) {
+    final args = ast['args'] as List<AST>;
+    for (final arg in args) {
       pp(arg);
       emit(",");
     }
-    final block = ast['doblock'];
+    final block = ast['doblock'] as AST?;
     if (block != null) {
       pp(block);
     } else {
-      if (args.isNotEmpty) line = line.substring(0, line.length-1);
+      if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     }
     emit(")");
   },
-  '[]': (Map ast) {
+  '[]': (ast) {
     pp(ast['expr']);
     emit("[");
-    final List/*<Map>*/ args = ast['args'];
-    for (var arg in args) {
+    final args = ast['args'] as List<AST>;
+    for (final arg in args) {
       pp(arg);
       emit(",");
     }
-    if (args.isNotEmpty) line = line.substring(0, line.length-1);
+    if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     emit("]");
   },
-  'case': (Map ast) {
+  'case': (ast) {
     emit("switch (");
     pp(ast['expr']);
     emit(") {");
     nl(1);
-    final List whens = ast['whens'];
-    for (var when in whens) {
+    final whens = ast['whens'] as List<AST>;
+    for (final when in whens) {
       pp(when);
     }
     nl(-1);
     emit("}");
   },
-  'when': (Map ast) {
-    for (var expr in ast['exprList']) {
+  'when': (ast) {
+    for (final expr in ast['exprList'] as List<AST>) {
       emit('case ');
       pp(expr);
       emit(":");
@@ -624,8 +628,8 @@ Map<String, Printer> dartMethods = {
     nl();
     nl(-1);
   },
-  'lit': (Map ast) {
-    var value = ast['value'];
+  'lit': (ast) {
+    Object? value = ast['value'];
     if (value is String) {
       value = '"${value.replaceAll('"', '\\"')}"';
     }
@@ -636,30 +640,30 @@ Map<String, Printer> dartMethods = {
     }
     emit("$value");
   },
-  'relit': (Map ast) {
+  'relit': (ast) {
     emit("new RegExp(r\"${ast['value']}\")");
   },
-  '::': (Map ast) {
+  '::': (ast) {
     pp(ast['expr']);
     emit(".");
     emit(ast['name']);
   },
-  'array': (Map ast) {
+  'array': (ast) {
     emit("new Array.from([");
-    final List/*<Map>*/ args = ast['args'];
-    for (var arg in args) {
+    final args = ast['args'] as List<AST>;
+    for (final arg in args) {
       pp(arg);
       emit(",");
     }
-    if (args.isNotEmpty) line = line.substring(0, line.length-1);
+    if (args.isNotEmpty) line = line.substring(0, line.length - 1);
     emit("])");
   },
-  'not': (Map ast) {
+  'not': (ast) {
     emit("(!");
     pp(ast['expr']);
     emit(")");
   },
-  'class': (Map ast) {
+  'class': (ast) {
     emit('class ');
     emit(ast['name']);
     if (ast['superclass'] != null) {
@@ -668,29 +672,29 @@ Map<String, Printer> dartMethods = {
     }
     emit(" {");
     nl(1);
-    className = ast['name'];
+    className = ast['name'] as String;
     returnblock(ast['block']);
     className = null;
     nl(-1);
     emit("}");
   },
-  'attr_accessor': (Map ast) {
+  'attr_accessor': (ast) {
     emit("var ");
-    final List<String> symbols = ast['list'];
-    for (var symbol in symbols) {
+    final symbols = ast['list'] as List<String>;
+    for (final symbol in symbols) {
       emit("$symbol,");
     }
-    line = line.substring(0, line.length-1);
+    line = line.substring(0, line.length - 1);
   },
-  'attr_reader': (Map ast) {
+  'attr_reader': (ast) {
     emit("final ");
-    final List<String> symbols = ast['list'];
-    for (var symbol in symbols) {
+    final symbols = ast['list'] as List<String>;
+    for (final symbol in symbols) {
       emit("$symbol,");
     }
-    line = line.substring(0, line.length-1);
+    line = line.substring(0, line.length - 1);
   },
-  'for': (Map ast) {
+  'for': (ast) {
     emit("for (");
     pp(ast['target']);
     emit(" in ");
@@ -701,43 +705,42 @@ Map<String, Printer> dartMethods = {
     nl(-1);
     emit("}");
   },
-  '..': (Map ast) {
+  '..': (ast) {
     emit("new Range.incl(");
     pp(ast['left']);
     emit(",");
     pp(ast['right']);
     emit(")");
   },
-  '...': (Map ast) {
+  '...': (ast) {
     emit("new Range.excl(");
     pp(ast['left']);
     emit(",");
     pp(ast['right']);
     emit(")");
   },
-  'next': (Map ast) {
+  'next': (ast) {
     emit('continue');
   },
-  '+=': (Map ast) {
+  '+=': (ast) {
     pp(ast['target']);
     emit(" += ");
     pp(ast['expr']);
   },
-  '-=': (Map ast) {
+  '-=': (ast) {
     pp(ast['target']);
     emit(" -= ");
     pp(ast['expr']);
   },
-  'alias': (Map ast) {
-  },
-  'self': (Map ast) {
+  'alias': (ast) {},
+  'self': (ast) {
     emit('this');
   },
-  'super': (Map ast) {
+  'super': (ast) {
     emit('super');
   },
   '<=>': op('<=>'), //TODO
-  'dowhile': (Map ast) {
+  'dowhile': (ast) {
     emit('do {');
     nl(1);
     returnblock(ast['block']);
@@ -746,10 +749,10 @@ Map<String, Printer> dartMethods = {
     pp(ast['expr']);
     emit(")");
   },
-  'symbol': (Map ast) {
+  'symbol': (ast) {
     emit("'${ast['name']}'");
   },
-  'while': (Map ast) {
+  'while': (ast) {
     emit("while (");
     pp(ast['expr']);
     emit(") {");
@@ -758,24 +761,24 @@ Map<String, Printer> dartMethods = {
     nl(-1);
     emit("}");
   },
-  'break': (Map ast) => emit("break"),
-  'ensure': (Map ast) {
+  'break': (ast) => emit("break"),
+  'ensure': (ast) {
     emit("}");
     nl(-1);
     emit("finally {");
     nl(1);
   },
-  'rescue': (Map ast) {
+  'rescue': (ast) {
     emit("}");
     nl(-1);
     emit("catch (e) {");
     nl(1);
   },
-  'splat': (Map ast) {
+  'splat': (ast) {
     emit("*");
     pp(ast['expr']);
   },
-  '?:': (Map ast) {
+  '?:': (ast) {
     emit("(");
     pp(ast['expr']);
     emit(" ? ");
@@ -784,24 +787,25 @@ Map<String, Printer> dartMethods = {
     pp(ast['else']);
     emit(")");
   },
-  'return': (Map ast) {
+  'return': (ast) {
     emit("return");
     if (ast['expr'] != null) {
       emit(" ");
       pp(ast['expr']);
     }
   },
-  'neg': (Map ast) {
+  'neg': (ast) {
     emit("(-");
     pp(ast['expr']);
     emit(")");
   },
-  'module': (Map ast) { //TODO
+  'module': (ast) {
+    //TODO
     emit("class ");
     emit(ast['name']);
     emit(" {");
     nl(1);
-    className = ast['name'];
+    className = ast['name'] as String;
     returnblock(ast['block']);
     className = null;
     emit("}");
