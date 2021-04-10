@@ -2,7 +2,7 @@
 part of rubyparser;
 
 class Parser extends Scanner {
-  List<Set<String>> locals = [new Set()]; // tracks local variables
+  final locals = <Set<String>>[{}]; // tracks local variables
 
   /**
    * Constructs a new parser for the given [source] string.
@@ -13,7 +13,7 @@ class Parser extends Scanner {
    * Parses the source and returns an AST node of type `block`.
    */
   Map parse() {
-    var list = [];
+    final list = [];
     while (!atEnd()) {
       list.add(parseStmt());
     }
@@ -26,19 +26,25 @@ class Parser extends Scanner {
   Map parseStmt() {
     var stmt = parseSimpleStmt();
     if (!eol && at("if")) {
-      var expr = parseExpr();
+      final expr = parseExpr();
       stmt = {
         'type': 'if',
         'expr': expr,
-        'then': {'type': 'block', 'list': [stmt]},
+        'then': {
+          'type': 'block',
+          'list': [stmt]
+        },
         'else': null
       };
     } else if (!eol && at("unless")) {
-      var expr = parseExpr();
+      final expr = parseExpr();
       stmt = {
         'type': 'if',
         'expr': {'type': 'not', 'expr': expr},
-        'then': {'type': 'block', 'list': [stmt]},
+        'then': {
+          'type': 'block',
+          'list': [stmt]
+        },
         'else': null
       };
     }
@@ -55,7 +61,7 @@ class Parser extends Scanner {
    */
   Map parseSimpleStmt() {
     if (at("module")) {
-      var name = parseName();
+      final name = parseName();
       return {'type': 'module', 'name': name, 'block': parseBlock()};
     }
     if (at("class")) {
@@ -77,7 +83,7 @@ class Parser extends Scanner {
       return {'type': 'next'};
     }
     if (at("return")) {
-      var expr = null;
+      var expr;
       if (!eol && current != "if" && current != "unless") {
         expr = parseExpr();
       }
@@ -90,8 +96,8 @@ class Parser extends Scanner {
       return parseCaseStmt();
     }
     if (at("alias")) {
-      var oldSym = parseSymbol();
-      var newSym = parseSymbol();
+      final oldSym = parseSymbol();
+      final newSym = parseSymbol();
       return {'type': 'alias', 'old': oldSym, 'new': newSym};
     }
     if (at("attr_reader")) {
@@ -101,45 +107,47 @@ class Parser extends Scanner {
       return {'type': 'attr_accessor', 'list': parseSymbolList()};
     }
     if (at("begin")) {
-      var block = parseBlock();
+      final block = parseBlock();
       if (!eol && at("while")) {
-        var expr = parseExpr();
+        final expr = parseExpr();
         return {'type': 'dowhile', 'expr': expr, 'block': block};
       }
       if (!eol && at("until")) {
-        var expr = parseExpr();
-        return {'type': 'dowhile', 'expr': {'type': 'not', 'expr': expr}, 'block': block};
+        final expr = parseExpr();
+        return {
+          'type': 'dowhile',
+          'expr': {'type': 'not', 'expr': expr},
+          'block': block
+        };
       }
       return block;
     }
-    if (at("rescue")) { // only inside begin
+    if (at("rescue")) {
+      // only inside begin
       return {'type': 'rescue'};
     }
-    if (at("ensure")) { // only inside begin
+    if (at("ensure")) {
+      // only inside begin
       return {'type': 'ensure'};
     }
     return parseAssignment();
   }
 
   Map parseClassStmt() {
-    var name = parseName();
+    final name = parseName();
     var superclass;
     if (at("<")) {
       superclass = parseExpr();
     } else {
       superclass = null;
     }
-    return {
-      'type': 'class',
-      'name': name,
-      'superclass': superclass,
-      'block': parseBlock()};
+    return {'type': 'class', 'name': name, 'superclass': superclass, 'block': parseBlock()};
   }
 
   Map parseDefStmt() {
-    locals.add(new Set());
+    locals.add({});
     var name = consume(); // name or operator
-    var classname = null;
+    var classname;
     if (at(".")) {
       classname = name;
       name = consume(); // name or operator
@@ -151,21 +159,16 @@ class Parser extends Scanner {
         expect(")");
       }
     }
-    var block = parseBlock();
+    final block = parseBlock();
     locals.removeLast();
-    return {
-      'type': 'def',
-      'name': name,
-      'classname': classname,
-      'params': params,
-      'block': block};
+    return {'type': 'def', 'name': name, 'classname': classname, 'params': params, 'block': block};
   }
 
   Map parseIfStmt() {
-    var expr = parseExpr();
+    final expr = parseExpr();
     at("then"); // skip optional then
-    var thenBlock = null;
-    var elseBlock = null;
+    var thenBlock;
+    var elseBlock;
     var list = [];
     while (!at("end")) {
       if (at("elsif")) {
@@ -188,33 +191,43 @@ class Parser extends Scanner {
   }
 
   Map parseWhileStmt() {
-    var expr = parseExpr();
+    final expr = parseExpr();
     at("do"); // skip optional do
     return {'type': 'while', 'expr': expr, 'block': parseBlock()};
   }
 
   Map parseForStmt() {
-    var target = parsePrimary(); // name of any kind
+    final target = parsePrimary(); // name of any kind
     trackLocal(target);
     expect("in");
-    var expr = parseExpr();
+    final expr = parseExpr();
     at("do"); // skip optional do
     return {'type': 'for', 'target': target, 'expr': expr, 'block': parseBlock()};
   }
 
   Map parseCaseStmt() {
-    var expr = parseExpr();
-    var whens = [];
+    final expr = parseExpr();
+    final whens = [];
     while (at("when")) {
-      var whenExpr = parseExprAsList();
-      var whenList = [];
+      final whenExpr = parseExprAsList();
+      final whenList = [];
       while (current != "when" && current != "else" && current != "end") {
         whenList.add(parseStmt());
       }
-      whens.add({'type': 'when', 'exprList': whenExpr, 'block': {'type': 'block', 'list': whenList}});
+      whens.add({
+        'type': 'when',
+        'exprList': whenExpr,
+        'block': {'type': 'block', 'list': whenList}
+      });
     }
     if (at("else")) {
-      whens.add({'type': 'when', 'exprList': [{'type': 'lit', 'value': true}], 'block': parseBlock()});
+      whens.add({
+        'type': 'when',
+        'exprList': [
+          {'type': 'lit', 'value': true}
+        ],
+        'block': parseBlock()
+      });
     } else {
       expect("end");
     }
@@ -229,7 +242,7 @@ class Parser extends Scanner {
   Map parseAssignment() {
     var expr = parseSimpleExpr();
     if (at(",")) {
-      List<Map> targetList = [expr, parseSimpleExpr()];
+      var targetList = <Map>[expr, parseSimpleExpr()];
       while (at(",")) {
         targetList.add(parseSimpleExpr());
       }
@@ -242,7 +255,7 @@ class Parser extends Scanner {
             return expr;
           }
         }).toList();
-        List<Map> exprList = parseExprAsList();
+        final exprList = parseExprAsList();
         return {'type': 'assignment', 'targetList': targetList, 'exprList': exprList};
       }
       return {'type': 'listexpr', 'list': targetList};
@@ -261,8 +274,12 @@ class Parser extends Scanner {
         }
       }
       trackLocal(expr);
-      List<Map> exprList = parseExprAsList();
-      return {'type': 'assignment', 'targetList': [expr], 'exprList': exprList};
+      final exprList = parseExprAsList();
+      return {
+        'type': 'assignment',
+        'targetList': [expr],
+        'exprList': exprList
+      };
     }
     if (at("+=")) {
       if (expr['type'] == 'mcall') {
@@ -270,7 +287,10 @@ class Parser extends Scanner {
           'type': 'mcall',
           'expr': expr['expr'],
           'name': expr['name'] + "=",
-          'args': [{'type': '+', 'left': expr, 'right': parseExpr()}]};
+          'args': [
+            {'type': '+', 'left': expr, 'right': parseExpr()}
+          ]
+        };
       }
       return {'type': '+=', 'target': expr, 'expr': parseExpr()};
     }
@@ -280,7 +300,10 @@ class Parser extends Scanner {
           'type': 'mcall',
           'expr': expr['expr'],
           'name': expr['name'] + "=",
-          'args': [{'type': '-', 'left': expr, 'right': parseExpr()}]};
+          'args': [
+            {'type': '-', 'left': expr, 'right': parseExpr()}
+          ]
+        };
       }
       return {'type': '-=', 'target': expr, 'expr': parseExpr()};
     }
@@ -290,14 +313,13 @@ class Parser extends Scanner {
   /**
    * Parses a block of statements up to either `end` or the given [token].
    */
-  Map parseBlock([token="end"]) {
-    var list = [];
+  Map parseBlock([token = "end"]) {
+    final list = [];
     while (!at(token)) {
       list.add(parseStmt());
     }
     return {'type': 'block', 'list': list};
   }
-
 
   Map parseExpr() {
     return parseSimpleStmt(); // statements are expressions, too
@@ -321,9 +343,9 @@ class Parser extends Scanner {
   Map parseSimpleExpr() {
     var expr = parseRange();
     if (at("?")) {
-      var thenExpr = parseSimpleExpr();
+      final thenExpr = parseSimpleExpr();
       expect(":");
-      var elseExpr = parseSimpleExpr();
+      final elseExpr = parseSimpleExpr();
       expr = {'type': '?:', 'expr': expr, 'then': thenExpr, 'else': elseExpr};
     }
     return expr;
@@ -451,13 +473,14 @@ class Parser extends Scanner {
         break;
       }
       if (at("[")) {
-        List<Map> args = parseExprAsList();
+        final args = parseExprAsList();
         expect("]");
         expr = {'type': '[]', 'expr': expr, 'args': args};
       } else if (at("::")) {
         expr = {'type': '::', 'expr': expr, 'name': parseName()};
-      } else if (at(".")) { // <expr>.name(foo, ...) or <expr>.name foo, ...
-        var name = parseName();
+      } else if (at(".")) {
+        // <expr>.name(foo, ...) or <expr>.name foo, ...
+        final name = parseName();
         List<Map> args;
         if (at("(")) {
           if (!at(")")) {
@@ -472,9 +495,10 @@ class Parser extends Scanner {
           args = [];
         }
         expr = {'type': 'mcall', 'expr': expr, 'name': name, 'args': args};
-      } else if (at("(")) { // <expr>(foo, ...)
+      } else if (at("(")) {
+        // <expr>(foo, ...)
         if (expr['type'] != 'var') {
-          error("expected var but found $expr");
+          throw error("expected var but found $expr");
         }
         List<Map> list;
         if (!at(")")) {
@@ -484,22 +508,26 @@ class Parser extends Scanner {
           list = [];
         }
         expr = {'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list};
-      } else if (isPrimary()) { // <expr> foo, ...
+      } else if (isPrimary()) {
+        // <expr> foo, ...
         if (expr['type'] != 'var') {
-          error("expected var but found $expr");
+          throw error("expected var but found $expr");
         }
-        List<Map> list = parseExprAsList();
+        final list = parseExprAsList();
         expr = {'type': 'mcall', 'expr': null, 'name': expr['name'], 'args': list};
-      } else if (at("do")) { // <expr> do ... end
+      } else if (at("do")) {
+        // <expr> do ... end
         expr = parseDoBlock(expr, "end");
-      } else if (at("{")) { // <expr> { ... }
+      } else if (at("{")) {
+        // <expr> { ... }
         expr = parseDoBlock(expr, "}");
       } else {
         break;
       }
     }
-    if (expr['type'] == 'var') { // for variables that aren't local vars assume a method call
-      var name = expr['name'];
+    if (expr['type'] == 'var') {
+      // for variables that aren't local vars assume a method call
+      final name = expr['name'];
       if (!isLocal(name)) {
         expr = {'type': 'mcall', 'expr': null, 'name': name, 'args': []};
       }
@@ -513,9 +541,9 @@ class Parser extends Scanner {
    */
   Map parseDoBlock(Map expr, String token) {
     if (expr['type'] != 'mcall') {
-      error("expected mcall but found $expr");
+      throw error("expected mcall but found $expr");
     }
-    locals.add(new Set());
+    locals.add({});
     List<Map> params;
     if (at("|")) {
       params = parseParamList();
@@ -542,7 +570,7 @@ class Parser extends Scanner {
     if (isKeyword()) {
       return false;
     }
-    return new RegExp(r'''^(\d+|[:$@]?\w+|"|'|/.)''').hasMatch(current);
+    return RegExp(r'''^(\d+|[:$@]?\w+|"|'|/.)''').hasMatch(current);
   }
 
   /**
@@ -554,7 +582,7 @@ class Parser extends Scanner {
    */
   Map parsePrimary() {
     if (at("(")) {
-      var expr = parseExpr();
+      final expr = parseExpr();
       expect(")");
       return expr;
     }
@@ -575,7 +603,7 @@ class Parser extends Scanner {
       return {'type': 'var', 'name': 'super'}; // TODO so it can be mcalled
     }
     if (at("[")) {
-      List<Map> list = [];
+      var list = <Map>[];
       if (!at("]")) {
         list = parseExprAsList();
         expect("]");
@@ -583,31 +611,32 @@ class Parser extends Scanner {
       return {'type': 'array', 'args': list};
     }
 
-    if (at("return")) { // TODO return as expression? Really?
-      return{'type': 'return', 'expr': null};
+    if (at("return")) {
+      // TODO return as expression? Really?
+      return {'type': 'return', 'expr': null};
     }
 
     if (atEnd()) {
-      error("unexpected end of input");
+      throw error("unexpected end of input");
     }
     if (isKeyword()) {
-      error("unexpected keyword $current");
+      throw error("unexpected keyword $current");
     }
-    if (new RegExp(r"^\d+").hasMatch(current)) {
+    if (RegExp(r"^\d+").hasMatch(current)) {
       return {'type': 'lit', 'value': double.parse(consume())};
     }
-    if (new RegExp(r"^[A-Z]").hasMatch(current)) {
+    if (RegExp(r"^[A-Z]").hasMatch(current)) {
       return {'type': 'const', 'name': consume()};
     }
-    if (new RegExp(r"^[a-z_]").hasMatch(current)) {
+    if (RegExp(r"^[a-z_]").hasMatch(current)) {
       return {'type': 'var', 'name': consume()};
     }
     if (current[0] == '"' || current[0] == "'") {
-      String v = consume();
+      final v = consume();
       return {'type': 'lit', 'value': v.substring(1, v.length - 1)};
     }
     if (current[0] == '/' && current.length > 1) {
-      String v = consume();
+      final v = consume();
       return {'type': 'relit', 'value': v.substring(1, v.length - 1)};
     }
     if (current[0] == '@') {
@@ -619,7 +648,7 @@ class Parser extends Scanner {
     if (current[0] == ':') {
       return {'type': 'symbol', 'name': consume().substring(1)};
     }
-    error("expected primary but found ${current}");
+    throw error("expected primary but found $current");
   }
 
   /**
@@ -627,7 +656,7 @@ class Parser extends Scanner {
    * Returns a list of expression nodes.
    */
   List<Map> parseExprAsList() {
-    var expr = parseExpr();
+    final expr = parseExpr();
     if (expr['type'] == 'listexpr') {
       return expr['list'];
     }
@@ -639,7 +668,7 @@ class Parser extends Scanner {
    * Returns a list of [param] or [restparam] nodes.
    */
   List<Map> parseParamList() {
-    List<Map> list = [];
+    final list = <Map>[];
     list.add(parseParam());
     while (at(",")) {
       list.add(parseParam());
@@ -653,16 +682,13 @@ class Parser extends Scanner {
    */
   Map parseParam() {
     if (at("*")) {
-      var name = parseName();
+      final name = parseName();
       locals.last.add(name);
       return {'type': 'restparam', 'name': name};
     }
-    var name = parseName();
+    final name = parseName();
     locals.last.add(name);
-    var init = null;
-    if (at("=")) {
-      init = parseExpr();
-    }
+    final init = at("=") ? parseExpr() : null;
     return {'type': 'param', 'name': name, 'init': init};
   }
 
@@ -670,7 +696,7 @@ class Parser extends Scanner {
    * Parses and returns a comma-separated list of symbols.
    */
   List<String> parseSymbolList() {
-    var list = [];
+    final list = <String>[];
     list.add(parseSymbol());
     while (at(",")) {
       list.add(parseSymbol());
@@ -683,10 +709,10 @@ class Parser extends Scanner {
    * (Symbols starts with a `:`)
    */
   String parseSymbol() {
-    if (new RegExp(r"^:.").hasMatch(current)) {
+    if (RegExp(r"^:.").hasMatch(current)) {
       return consume().substring(1);
     }
-    error("expected symbol but found ${current}");
+    throw error("expected symbol but found $current");
   }
 
   /**
@@ -694,10 +720,10 @@ class Parser extends Scanner {
    * (Names start with a letter)
    */
   String parseName() {
-    if (new RegExp(r"^\w").hasMatch(current)) {
+    if (RegExp(r"^\w").hasMatch(current)) {
       return consume();
     }
-    error("expected name but found ${current}");
+    throw error("expected name but found $current");
   }
 
   /**
@@ -714,7 +740,7 @@ class Parser extends Scanner {
    * Used to distinguish local variable access from implicit method calls without parentheses.
    */
   bool isLocal(String name) {
-    for (int i = locals.length - 1; i >= 0; --i) {
+    for (var i = locals.length - 1; i >= 0; --i) {
       if (locals[i].contains(name)) {
         return true;
       }

@@ -1,6 +1,8 @@
+.dart_tool
+.packages
+
 out/
 ?.txt
 game
 orders
 players
-

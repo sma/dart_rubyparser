@@ -1,21 +1,9 @@
-// Copyright 2013 by Stefan Matthias Aust
-library rubyparser;
-
 import 'dart:io';
 
-part 'scanner.dart';
-part 'parser.dart';
-part 'printer.dart';
-
-void parse(File file) {
-  var source = file.readAsStringSync();
-  var parser = new Parser(source);
-  print("----------$file--------------------------------------------------");
-  pp(parser.parse());
-}
+import 'package:rubyparser/rubyparser.dart';
 
 void main() {
-  for (File file in new Directory("rb").listSync()) {
+  for (File file in Directory("rb").listSync()) {
     parse(file);
   }
 }

@@ -7,7 +7,7 @@ class Scanner {
   bool eol;
 
   Scanner(String source) {
-    var re = r'\n|;|[ \r\t]+|#.*$|('            // whitespace & comments
+    final re = r'\n|;|[ \r\t]+|#.*$|('          // whitespace & comments
         r'\d+(?:\.\d+)?|'                       // numbers
         r'[@$]?\w+[?!]?|'                       // names
         r':(?:\w+|[-+*/%<>=!&|]+)|'             // symbols
@@ -17,7 +17,7 @@ class Scanner {
         r'::|&&|\|\||\.\.\.?|'                  // operators
         r'[.,()\[\]|{}?:]'                      // syntax
         r')|(.)';                               // catch illegal character
-    matches = new RegExp(re, multiLine: true).allMatches(source).iterator;
+    matches = RegExp(re, multiLine: true).allMatches(source).iterator;
     current = next();
     eol = true;
   }
@@ -25,8 +25,8 @@ class Scanner {
   /**
    * Throws a scanner or parser error.
    */
-  void error(String message) {
-    throw message;
+  String error(String message) {
+    return message;
   }
 
   /**
@@ -36,7 +36,7 @@ class Scanner {
   String next() {
     if (matches.moveNext()) {
       if (matches.current[2] != null) {
-        error("invalid character '«${matches.current[2]}»");
+        throw error("invalid character '«${matches.current[2]}»");
       }
       if (matches.current[1] != null) {
         return matches.current[1];
@@ -71,9 +71,9 @@ class Scanner {
   /**
    * Consumes the current token if it equal to the given one or throws an error.
    */
-  expect(token) {
+  void expect(token) {
     if (!at(token)) {
-      error("expected ${token}, found ${current}");
+      throw error("expected $token, found $current");
     }
   }
 
@@ -82,13 +82,13 @@ class Scanner {
    * Also resets [eol].
    */
   String consume() {
-    var value = current;
+    final value = current;
     eol = false;
     current = next();
     return value;
   }
 
-  static final Set<String> KEYWORDS = new Set.from(
+  static final Set<String> KEYWORDS = Set.of(
       'alias and begin break case class def defined? do else elsif end ensure false for if in module next nil '
       'not or redo rescue retry return self super then true undef unless until when while yield'.split(' '));
 

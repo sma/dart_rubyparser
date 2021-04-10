@@ -1,0 +1,16 @@
+include: package:pedantic/analysis_options.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: true
+    implicit-dynamic: true
+  exclude:
+    - bin/re/*.dart
+  errors:
+    todo: false
+
+linter:
+  rules:
+    prefer_single_quotes: false
+    slash_for_doc_comments: false
+    prefer_final_locals: true
