@@ -1,26 +1,28 @@
 part of rainbowsend;
 
 class Entity {
-  int id;
-  String name;
-  final Array<Order> orders = new Array();
-  final Array<String> events = new Array();
+  late int id;
+  late String name;
+  final orders = Array<Order>();
+  final events = Array<String>();
 
-  String get nameid => "${name} [${id}]";
+  Entity(this.id, this.name);
+
+  String get nameid => '$name [$id]';
 
   void event(String message) {
-    events.add("${$slot}: ${message}.");
+    events.add('${$slot}: $message.');
   }
 
   void quote(List<Object> args) {
-    var buf = "${$slot}: >";
+    var buf = '${$slot}: >';
     for (var arg in args) {
-      buf += " ";
-      arg = arg.toString();
-      if (arg.contains(" ")) {
-        buf += '"${arg}"';
+      buf += ' ';
+      final arg1 = arg.toString();
+      if (arg1.contains(' ')) {
+        buf += '"$arg"';
       } else {
-        buf += arg;
+        buf += arg1;
       }
     }
     events.add(buf);
@@ -32,9 +34,9 @@ class Entity {
         return;
       }
       o.type = Order.Null;
-      var i = orders.index(o) + 1;
+      final i = orders.index(o) + 1;
       while (orders.length < Maxorders) {
-        orders.insert(i, new Order(Order.Null,new Array()));
+        orders.insert(i, Order(Order.Null, Array()));
       }
     });
   }

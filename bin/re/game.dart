@@ -14,7 +14,7 @@ void newgame() {
 
 void playerorders() {
   for ($slot = 1; $slot <= Maxorders; $slot++) {
-    var si = ($slot - 1);
+    final si = ($slot - 1);
     $players.each((p) {
       if ((si < p.orders.length)) {
         doorder(p,p.orders[si]);
@@ -23,12 +23,12 @@ void playerorders() {
   }
 }
 void unitorders_(int phase) {
-  var si = ($slot - 1);
+  final si = ($slot - 1);
   $units.shuffle().each((u) {
     if ((u.removed || (si >= u.orders.length))) {
       return;
     }
-    var o = u.orders[si];
+    final o = u.orders[si];
     switch (o.type) {
       case Order.Build:
       case Order.Drop:

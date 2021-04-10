@@ -4,8 +4,6 @@ analyzer:
   strong-mode:
     implicit-casts: true
     implicit-dynamic: false
-  exclude:
-    - bin/re/*.dart
   errors:
     todo: false
     implicit_dynamic_map_literal: false

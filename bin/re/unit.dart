@@ -2,17 +2,9 @@ part of rainbowsend;
 
 class Unittype {
   String name;
-  int buildcost,upkeepcost,movement,attack,defense,range;
+  int buildcost, upkeepcost, movement, attack, defense, range;
 
-  Unittype(name,buildcost,upkeepcost,movement,attack,defense,range) {
-    this.name = name;
-    this.buildcost = buildcost;
-    this.upkeepcost = upkeepcost;
-    this.movement = movement;
-    this.attack = attack;
-    this.defense = defense;
-    this.range = range;
-  }
+  Unittype(this.name, this.buildcost, this.upkeepcost, this.movement, this.attack, this.defense, this.range);
 }
 
 class Unit extends Entity {
@@ -28,18 +20,15 @@ class Unit extends Entity {
   int type;
   Player player;
   int _hex;
-  int movement,special;
+  int movement, special;
   bool removed;
 
-  Unit(int id, String name, int type, Player player, int hex) {
-    this.id = id;
-    this.name = name;
-    this.type = type;
-    this.player = player;
-    this._hex = hex;
-    this.removed = false;
-    this.special = 0;
-  }
+  Unit(int id, String name, this.type, this.player, int hex)
+      : _hex = hex,
+        movement = 0,
+        special = 0,
+        removed = false,
+        super(id, name);
 
   bool isCity() => (type == City);
   bool isRuin() => (type == Ruins);
@@ -47,30 +36,35 @@ class Unit extends Entity {
   Hex hex() {
     return $hexes[_hex];
   }
+
   String pid() {
-    return "[${player.id}-${id}]";
+    return '[${player.id}-$id]';
   }
+
   String namepid() {
-    return "${this.name} ${pid()}";
+    return '${this.name} ${pid()}';
   }
+
   String namepidtype() {
-    return "${namepid()} (${Unittypes[type].name})";
+    return '${namepid()} (${Unittypes[type].name})';
   }
+
   int get attack => Unittypes[type].attack;
   int get defense => Unittypes[type].defense;
 }
 
-final Array<Unittype> Unittypes = new Array.from([
-  new Unittype("city",20,(-10),0,0,0,0),
-  new Unittype("settlers",10,1,3,0,2,0),
-  new Unittype("infantry",10,1,3,4,4,0),
-  new Unittype("tanks",20,2,6,8,6,0),
-  new Unittype("artillery",20,2,3,2,4,2),
-  new Unittype("ruins",0,0,0,0,0,0),
-  new Unittype("mechs",0,3,6,6,6,2),
-  new Unittype("scouts",5,1,6,0,1,0)]);
+final Array<Unittype> Unittypes = Array.from([
+  Unittype('city', 20, (-10), 0, 0, 0, 0),
+  Unittype('settlers', 10, 1, 3, 0, 2, 0),
+  Unittype('infantry', 10, 1, 3, 4, 4, 0),
+  Unittype('tanks', 20, 2, 6, 8, 6, 0),
+  Unittype('artillery', 20, 2, 3, 2, 4, 2),
+  Unittype('ruins', 0, 0, 0, 0, 0, 0),
+  Unittype('mechs', 0, 3, 6, 6, 6, 2),
+  Unittype('scouts', 5, 1, 6, 0, 1, 0)
+]);
 
-final Array<Unit> $units = new Array();
+final Array<Unit> $units = Array();
 
 void deletecities() {
   $units.each((u) {
@@ -82,7 +76,7 @@ void deletecities() {
 
 bool initcities() {
   $players.each((p) {
-    var c = new Unit(1,"City",Unit.City,p,(-1));
+    final c = Unit(1, 'City', Unit.City, p, (-1));
     do {
       c._hex = (rand($hexes.length));
     } while (c.hex().isWater());
@@ -93,42 +87,42 @@ bool initcities() {
   while (more) {
     more = false;
     $units.each((c) {
-      var r = nearestcity(c.hex(),c);
-      var a = new Array();
-      for (int d = 0; d < 6; d++) {
-        var hex = displace(c.hex(),d);
+      final r = nearestcity(c.hex(), c);
+      final a = Array<Hex>();
+      for (var d = 0; d < 6; d++) {
+        final hex = displace(c.hex(), d);
         if (((hex == null) || hex.isWater())) {
           continue;
         }
-        if ((nearestcity(hex,c) > r)) {
+        if ((nearestcity(hex, c) > r)) {
           a.add(hex);
         }
       }
       if (a.isEmpty) {
         return;
       }
-      moveunit(c,a[rand(a.length)]);
+      moveunit(c, a[rand(a.length)]);
       more = true;
     });
   }
 
-  return $units.find((c) => (nearestcity(c.hex(),c) < ($cityseparation + 1))) == null;
+  return $units.find((c) => (nearestcity(c.hex(), c) < ($cityseparation + 1))) == null;
 }
 
 void initunits() {
-  for (int i = 0; i < 10; i++) {
+  for (var i = 0; i < 10; i++) {
     if (initcities()) {
       return;
     }
     deletecities();
   }
-  throw("Unable to place starting cities");
+  throw ('Unable to place starting cities');
 }
 
 void addunit(Unit u) {
   $units.add(u);
   u.hex().units.add(u);
-  var units = u.player.units;
+  final units = u.player.units;
   if ((units.isEmpty || (units.last().id < u.id))) {
     units.add(u);
   } else {
@@ -140,29 +134,29 @@ void addunit(Unit u) {
   }
 }
 
-int findunittype(String s) {
+int findunittype(String? s) {
   if (s == null) {
     return (-1);
   }
-  var ut = Unittypes.detect((ut2) => ut2.name.startsWith(s.toLowerCase()));
+  final ut = Unittypes.detect((ut2) => ut2.name.startsWith(s.toLowerCase()))!;
   return Unittypes.index(ut);
 }
 
-Unit findunit(Player p,int id) {
+Unit? findunit(Player p, int id) {
   return p.units.detect((u) => u.id == id);
 }
 
-int nearestcity(Hex h,[c=null]) {
+int nearestcity(Hex h, [Unit? c]) {
   var r = 999999;
   $units.each((c2) {
     if (((c2 != c) && c2.isCity())) {
-      r = min(r,distance(h,c2.hex()));
+      r = min(r, distance(h, c2.hex()));
     }
   });
   return r;
 }
 
-void moveunit(Unit u,Hex hex) {
+void moveunit(Unit u, Hex hex) {
   u.hex().units.remove(u);
   u._hex = (hex.h);
   u.hex().units.add(u);

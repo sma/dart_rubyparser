@@ -6,7 +6,7 @@ void _decideorders(Player p) {
   p.units.each((u) {
     if (u.isCity()) {
       if (p.money >= $moneythreshold) {
-        var i;
+        int i;
         switch (rand(3)) {
           case 0:
             i = Unit.Tanks;
@@ -17,13 +17,15 @@ void _decideorders(Player p) {
           case 2:
             i = Unit.Infantry;
             break;
+          default:
+            throw Error();
         }
-        var ut = Unittypes[i];
-        u.orders.add(new Order(Order.Build, new Array.from([ut.name])));
+        final ut = Unittypes[i];
+        u.orders.add(Order(Order.Build, Array.from([ut.name])));
       } else {
         if (rand(3) > 0) {
-          var ut = Unittypes[Unit.Infantry];
-          u.orders.add(new Order(Order.Build, new Array.from([ut.name])));
+          final ut = Unittypes[Unit.Infantry];
+          u.orders.add(Order(Order.Build, Array.from([ut.name])));
         }
       }
     } else {
@@ -33,13 +35,13 @@ void _decideorders(Player p) {
 }
 
 void _combatorders(Unit u) {
-  var targets = $units.select((u2) {
+  final targets = $units.select((u2) {
     return (distance(u.hex(),u2.hex()) < $sightingdistance);
   });
   if ((Unittypes[u.type].range > 0)) {
     targets.map((u2) => u2.hex()).shuffle().each((hex) {
       if ((hex != u.hex())) {
-        u.orders.add(new Order(Order.Fire,new Array.from(["${hex.x}/${hex.y}"])));
+        u.orders.add(Order(Order.Fire,Array.from(['${hex.x}/${hex.y}'])));
       }
     });
   }

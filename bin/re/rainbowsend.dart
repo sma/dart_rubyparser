@@ -24,7 +24,7 @@ const $cityseparation = 3;
 const $sightingdistance = 3;
 
 /** Internal random number generator (see [rand]). */
-var _rnd = new Random();
+var _rnd = Random();
 
 /** Returns a random number between 0 and n (excluding). */
 int rand(int n) {
@@ -51,18 +51,18 @@ int sign(int x) {
 
 /** An Array class compatible with Ruby's API. */
 class Array<E> /*implements Iterable<E>*/ {
-  List<E> _elements;
+  late List<E> _elements;
 
-  Array([int length=0]) {
-    if (length == 0) {
-      _elements = [];
-    } else {
-      _elements = new List.filled(length, null);
-    }
+  Array(/*[int length=0]*/) {
+    //if (length == 0) {
+      _elements = <E>[];
+    //} else {
+    //  _elements = List.filled(length, null);
+    //}
   }
 
   factory Array.from(List<E> list) {
-    var a = new Array();
+    final a = Array<E>();
     a._elements = list;
     return a;
   }
@@ -79,18 +79,18 @@ class Array<E> /*implements Iterable<E>*/ {
     _elements.insert(index, element);
   }
 
-  void each(void f(E element)) {
+  void each(void Function(E element) f) {
     _elements.forEach(f);
   }
 
-  void each_with_index(void f(E element, int index)) {
-    for (int index = 0; index < _elements.length; index++) {
+  void each_with_index(void Function(E element, int index) f) {
+    for (var index = 0; index < _elements.length; index++) {
       f(_elements[index], index);
     }
   }
 
-  E find(bool f(E element)) {
-    for (E e in _elements) {
+  E? find(bool Function(E element) f) {
+    for (final e in _elements) {
       if (f(e)) {
         return e;
       }
@@ -98,25 +98,25 @@ class Array<E> /*implements Iterable<E>*/ {
     return null;
   }
 
-  E detect(bool f(E element)) {
+  E? detect(bool Function(E element) f) {
     return find(f);
   }
 
-  Array<dynamic> collect(dynamic f(E element)) {
-    var a = new Array();
-    for (E e in _elements) {
+  Array<F> collect<F>(F Function(E element) f) {
+    final a = Array<F>();
+    for (var e in _elements) {
       a.add(f(e));
     }
     return a;
   }
 
-  Array<dynamic> map(dynamic f(E element)) {
+  Array<F> map<F>(F Function(E element) f) {
     return collect(f);
   }
 
-  Array<E> select(bool f(E element)) {
-    Array<E> a = new Array();
-    for (E e in _elements) {
+  Array<E> select(bool Function(E element) f) {
+    final a = Array<E>();
+    for (var e in _elements) {
       if (f(e)) {
         a.add(e);
       }
@@ -125,7 +125,7 @@ class Array<E> /*implements Iterable<E>*/ {
   }
 
   int index(E element) {
-    for (int i = 0; i < _elements.length; i++) {
+    for (var i = 0; i < _elements.length; i++) {
       if (_elements[i] == element) {
         return i;
       }
@@ -134,14 +134,14 @@ class Array<E> /*implements Iterable<E>*/ {
   }
 
   Array<E> shuffle() {
-    var a = new List.from(_elements);
-    for (int i = a.length - 1; i > 0; i--) {
-      var j = rand(i + 1);
-      var t = a[i];
+    final a = List.of(_elements);
+    for (var i = a.length - 1; i > 0; i--) {
+      final j = rand(i + 1);
+      final t = a[i];
       a[i] = a[j];
       a[j] = t;
     };
-    return new Array.from(a);
+    return Array.from(a);
   }
 
   E operator [](int index) {
@@ -154,11 +154,11 @@ class Array<E> /*implements Iterable<E>*/ {
 
   E max() {
     if (_elements.isEmpty) {
-      return null;
+      throw TypeError();
     }
-    Comparable e = _elements[0] as Comparable;
-    for (int i = 1; i < _elements.length; i++) {
-      Comparable f = _elements[i] as Comparable;
+    var e = _elements[0] as Comparable;
+    for (var i = 1; i < _elements.length; i++) {
+      final f = _elements[i] as Comparable;
       if (f.compareTo(e) > 0) {
         e = f;
       }
@@ -185,52 +185,53 @@ class Array<E> /*implements Iterable<E>*/ {
   }
 
   Array<E> dup() {
-    return new Array.from(new List.from(_elements));
+    return Array.from(List.from(_elements));
   }
 
   Array<E> sublist(int start) {
-    return new Array.from(_elements.sublist(start));
+    return Array.from(_elements.sublist(start));
   }
 
-  List toList() {
+  List<E> toList() {
     return _elements;
   }
 
-  void sort(int cmp(E e1, E e2)) {
+  void sort(int Function(E e1, E e2) cmp) {
     _elements.sort(cmp);
   }
 
-  toString() => "Array$_elements";
+  @override
+  String toString() => 'Array$_elements';
 }
 
 /** A File class compatible with Ruby's API. */
 class File {
-  List<String> _lines;
-  String _name;
-  StringBuffer _b;
-  int _i = 0;
+  late List<String> _lines;
+  late String? _name;
+  late StringBuffer _b;
+  late int _i = 0;
 
   File.forRead(this._lines);
 
   File.forWrite(String name) {
-    this._name = name;
-    this._b = new StringBuffer();
+    _name = name;
+    _b = StringBuffer();
   }
 
-  static File open(String name, [String mode="r"]) {
+  static File? open(String name, [String mode='r']) {
     try {
-      if (mode == "w") return new File.forWrite(name);
-      return new File.forRead(new io.File(name).readAsLinesSync());
-    } on io.IOException catch (e) {
+      if (mode == 'w') return File.forWrite(name);
+      return File.forRead(io.File(name).readAsLinesSync());
+    } on io.IOException catch (_) {
       return null;
     }
   }
 
-  String gets() {
+  String? gets() {
     return _i < _lines.length ? _lines[_i++] : null;
   }
 
-  void each(void f(String line)) {
+  void each(void Function(String line) f) {
     var line = gets();
     while (line != null) {
       f(line);
@@ -240,31 +241,31 @@ class File {
 
   void close() {
     if (_name != null) {
-      new io.File(_name).writeAsStringSync(_b.toString());
+      io.File(_name!).writeAsStringSync(_b.toString());
     }
   }
 
-  write(String s) {
+  void write(String s) {
     _b.write(s);
   }
 }
 
 void main(List<String> arguments) {
-  switch (arguments.length > 0 ? arguments[0] : null) {
-    case "--new":
+  switch (arguments.isNotEmpty ? arguments[0] : null) {
+    case '--new':
       newgame();
       break;
-    case "--turn":
+    case '--turn':
       runturn();
       break;
-    case "--version":
+    case '--version':
       print("Rainbow's End version 1.3");
-      print("Rules Copyright 2001 by Russell Wallace");
-      print("Sourcecode Copyright 2001,2013 by Stefan Matthias Aust");
-      print("This program is free software.");
-      print("See license for details.");
+      print('Rules Copyright 2001 by Russell Wallace');
+      print('Sourcecode Copyright 2001,2013 by Stefan Matthias Aust');
+      print('This program is free software.');
+      print('See license for details.');
       break;
     default:
-      print("usage: ${io.Platform.script} {--new | --turn | --version}");
+      print('usage: ${io.Platform.script} {--new | --turn | --version}');
   }
 }

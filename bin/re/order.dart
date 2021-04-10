@@ -1,7 +1,23 @@
 part of rainbowsend;
 
 class Order {
-  static final Array<String> Ordertypes = new Array.from(["build","drop","email","explore","fire","friendly","give","group","hostile","move","name","null","quit","ungroup","wait"]);
+  static final Array<String> Ordertypes = Array.from([
+    'build',
+    'drop',
+    'email',
+    'explore',
+    'fire',
+    'friendly',
+    'give',
+    'group',
+    'hostile',
+    'move',
+    'name',
+    'null',
+    'quit',
+    'ungroup',
+    'wait'
+  ]);
 
   static const int Build = 0;
   static const int Drop = 1;
@@ -22,62 +38,59 @@ class Order {
   int type;
   List<String> args;
 
-  Order(int type, Array<String> args) {
-    this.type = type;
-    this.args = args.toList();
-  }
+  Order(this.type, Array<String> args) : args = args.toList();
 }
 
 const Maxorders = 100;
 
-Array<String> read(File file) {
+Array<String>? read(File file) {
   while (true) {
-    var line = file.gets();
+    final line = file.gets();
     if (line == null) {
       return null;
     }
-    var words = parse(line);
+    final words = parse(line);
     if (!words.isEmpty) {
       return words;
     }
   }
 }
 
-int findtype(String s) {
+int findtype(String? s) {
   if (s == null) {
     return (-1);
   }
-  var order = Order.Ordertypes.detect((each) => each.startsWith(s));
+  final order = Order.Ordertypes.detect((each) => each.startsWith(s))!;
   return Order.Ordertypes.index(order);
 }
 
 void addorder(Entity e, Array<String> words) {
-  var type = findtype(words[0]);
+  final type = findtype(words[0]);
   if (type < 0) {
     e.quote(words.toList());
-    e.event("Order not recognized");
+    e.event('Order not recognized');
     return;
   }
   if (e.orders.length >= Maxorders) {
-    e.event("Maximum number of orders reached");
+    e.event('Maximum number of orders reached');
     return;
   }
-  e.orders.add(new Order(type, words.sublist(1)));
+  e.orders.add(Order(type, words.sublist(1)));
 }
 
 void readorders() {
-  var file = File.open("orders","r");
-  if (file == null) throw ("Orders file not found");
+  final file = File.open('orders', 'r');
+  if (file == null) throw ('Orders file not found');
   try {
     var words = read(file);
     while (words != null) {
-      while ((words[0].toLowerCase() != "player")) {
+      while ((words![0].toLowerCase() != 'player')) {
         words = read(file);
         if (words == null) return;
       }
-      var p = findplayer(int.parse(words[1]));
+      final p = findplayer(int.parse(words[1]));
       if (p == null) {
-        words = read(file);
+        words = read(file)!;
         continue;
       }
       p.orders.clear();
@@ -88,33 +101,33 @@ void readorders() {
       while (true) {
         words = read(file);
         if (words == null) return;
-        var w = words[0].toLowerCase();
-        if ((((w == "unit") || (w == "end")) || (w == "player"))) {
+        final w = words[0].toLowerCase();
+        if ((((w == 'unit') || (w == 'end')) || (w == 'player'))) {
           break;
         }
-        addorder(p,words);
+        addorder(p, words);
       }
-      while ((words[0].toLowerCase() == "unit")) {
-        var u = findunit(p,int.parse(words[1]));
-        var w;
+      while ((words![0].toLowerCase() == 'unit')) {
+        final u = findunit(p, int.parse(words[1]));
+        String w;
         if (u == null) {
           p.quote(words.toList());
-          p.event("You have no such unit");
+          p.event('You have no such unit');
           do {
-            var words = read(file);
+            final words = read(file);
             if (words == null) return;
             w = words[0].toLowerCase();
-          } while ((!(((w == "unit") || (w == "end")) || (w == "player"))));
+          } while ((!(((w == 'unit') || (w == 'end')) || (w == 'player'))));
           continue;
         }
         while (true) {
           words = read(file);
           if (words == null) return;
           w = words[0].toLowerCase();
-          if ((((w == "unit") || (w == "end")) || (w == "player"))) {
+          if ((((w == 'unit') || (w == 'end')) || (w == 'player'))) {
             break;
           }
-          addorder(u,words);
+          addorder(u, words);
         }
       }
     }
@@ -136,33 +149,33 @@ void doorder(Entity e, Order o) {
   if (o.type == Order.Null) {
     return;
   }
-  e.quote(<String>[Order.Ordertypes[o.type]]..addAll(o.args));
+  e.quote(<String>[Order.Ordertypes[o.type], ...o.args]);
   if (e is Unit) {
-    doorder2(e,o);
+    doorder2(e, o);
     return;
   }
-  Player p = e;
+  final p = e as Player;
   switch (o.type) {
     case Order.Email:
-      email(p,o.args);
+      email(p, o.args);
       break;
     case Order.Friendly:
-      friendly(p,o.args);
+      friendly(p, o.args);
       break;
     case Order.Give:
-      give(p,o.args);
+      give(p, o.args);
       break;
     case Order.Hostile:
-      hostile(p,o.args);
+      hostile(p, o.args);
       break;
     case Order.Name:
-      name(p,o.args);
+      name(p, o.args);
       break;
     case Order.Quit:
       quit(p);
       break;
     default:
-      p.event("That order must be issued for a specific unit");
+      p.event('That order must be issued for a specific unit');
       break;
   }
 }
@@ -170,37 +183,37 @@ void doorder(Entity e, Order o) {
 void doorder2(Unit u, Order o) {
   switch (o.type) {
     case Order.Build:
-      build(u,o.args.toList());
+      build(u, o.args.toList());
       break;
     case Order.Drop:
       drop(u);
       break;
     case Order.Email:
-      email(u.player,o.args);
+      email(u.player, o.args);
       break;
     case Order.Explore:
-      explore(u,o.args);
+      explore(u, o.args);
       break;
     case Order.Fire:
-      fire(u,o.args);
+      fire(u, o.args);
       break;
     case Order.Group:
-      group(u,o.args);
+      group(u, o.args);
       break;
     case Order.Move:
-      move(u,o.args);
+      move(u, o.args);
       break;
     case Order.Name:
-      name(u,o.args);
+      name(u, o.args);
       break;
     case Order.Quit:
       quit(u.player);
       break;
     case Order.Ungroup:
-      ungroup(u,o.args);
+      ungroup(u, o.args);
       break;
     default:
-      u.event("That order must be issued for your empire as a whole");
+      u.event('That order must be issued for your empire as a whole');
       break;
   }
 }

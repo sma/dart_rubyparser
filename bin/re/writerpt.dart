@@ -1,14 +1,14 @@
 part of rainbowsend;
 
-File file;
+File? file;
 
 void write(Object s) {
-  file.write("$s");
+  file!.write('$s');
 }
 
 void writec(int n, String c) {
-  for (int i = 0; i < n; i++) {
-    file.write(c);
+  for (var i = 0; i < n; i++) {
+    file!.write(c);
   }
 }
 
@@ -21,23 +21,23 @@ void newline() {
 }
 
 void writew(Object s, int width) {
-  var ss = "$s";
+  final ss = '$s';
   write(ss);
   space(width - ss.length);
 }
 
 void right(Object s, int width) {
-  var ss = "$s";
+  final ss = '$s';
   space(width - ss.length);
   write(ss);
 }
 
 int wrap(String s, int indent) {
-  int i = indent;
+  var i = indent;
   while (true) {
     // Find next word break
 
-    int j = 0;
+    var j = 0;
     while (j < s.length && s[j] != ' ') {
       j++;
     }
@@ -63,7 +63,7 @@ int wrap(String s, int indent) {
     // Print this word
 
     i += j;
-    file.write(s.substring(0, j));
+    file!.write(s.substring(0, j));
     s = s.substring(j);
 
     // If we're at the end of the string
@@ -94,7 +94,7 @@ void underline(String s) {
 void item(String caption, int width, Object s) {
   space(2);
   write(caption);
-  write(":");
+  write(':');
   space(width + 2 - caption.length);
   writeline(s);
 }
@@ -105,7 +105,7 @@ int countcities(Array<Unit> units) {
 
 void reportevent(String s) {
   space(2);
-  int i = s.indexOf(' ') + 1;
+  final i = s.indexOf(' ') + 1;
   write(s.substring(0, i));
   wrap(s.substring(i), 2 + i);
   newline();
@@ -127,16 +127,16 @@ void reportheader(Player p) {
 }
 
 void reporttotals() {
-  int money = 0;
+  var money = 0;
   $players.each((p) => money += p.money);
-  int cities = countcities($units);
+  final cities = countcities($units);
 
-  writeline("Game totals");
-  item("Players", 11, $players.length);
-  item("Map size", 11, "${$mapsizex}x${$mapsizey}");
-  item("Money", 11, money);
-  item("Cities", 11, cities);
-  item("Other units", 11, $units.length - cities);
+  writeline('Game totals');
+  item('Players', 11, $players.length);
+  item('Map size', 11, '${$mapsizex}x${$mapsizey}');
+  item('Money', 11, money);
+  item('Cities', 11, cities);
+  item('Other units', 11, $units.length - cities);
   newline();
 }
 
@@ -144,27 +144,27 @@ void reportgeneralorders(Player p) {
   if (p.events.isEmpty) {
     return;
   }
-  writeline("General orders");
+  writeline('General orders');
   reportevents(p);
 }
 
 void reportplayersummary(Player p) {
-  writeline("Player summary");
-  writeline("  number  relations  money  units");
-  writeline("  ------  ---------  -----  -----");
+  writeline('Player summary');
+  writeline('  number  relations  money  units');
+  writeline('  ------  ---------  -----  -----');
 
-  int totmoney = 0;
-  int totunits = 0;
+  var totmoney = 0;
+  var totunits = 0;
 
   $players.each((p2) {
     space(2);
     writew(p2.id, 8);
     if (p == p2) {
-      writew("n/a", 9);
+      writew('n/a', 9);
     } else if (p.friendly.contains(p2)) {
-      writew("friendly", 9);
+      writew('friendly', 9);
     } else {
-      writew("hostile", 9);
+      writew('hostile', 9);
     }
     right(p2.money, 7);
     right(p2.units.length, 7);
@@ -174,7 +174,7 @@ void reportplayersummary(Player p) {
     totunits += p2.units.length;
   });
 
-  writeline("  ------  ---------  -----  -----");
+  writeline('  ------  ---------  -----  -----');
 
   space(19);
   right(totmoney, 7);
@@ -185,32 +185,31 @@ void reportplayersummary(Player p) {
 }
 
 void reportplayerdetails(Player p) {
-  underline("Player details");
+  underline('Player details');
 
   $players.each((p2) {
-    int cities = countcities(p2.units);
+    final cities = countcities(p2.units);
 
     writeline(p2.nameid);
-    item("Email", 11, p2.email != null ? p2.email : "None");
+    item('Email', 11, p2.email != null ? p2.email! : 'None');
     if (p == p2) {
-      item("Relations", 11, "N/A");
+      item('Relations', 11, 'N/A');
     } else if (p.friendly.contains(p2)) {
-      item("Relations", 11, "Friendly");
+      item('Relations', 11, 'Friendly');
     } else {
-      item("Relations", 11, "Hostile");
+      item('Relations', 11, 'Hostile');
     }
-    item("Money", 11, p2.money);
-    item("Cities", 11, cities);
-    item("Other units", 11, p2.units.length - cities);
+    item('Money', 11, p2.money);
+    item('Cities', 11, cities);
+    item('Other units', 11, p2.units.length - cities);
     newline();
   });
 }
 
 void reportunitsummary(Player p, Player p2) {
-  bool found = false;
-  for (int i = 0; i < p2.units.length; i++)
-  {
-    Unit u = p2.units[i];
+  var found = false;
+  for (var i = 0; i < p2.units.length; i++) {
+    final u = p2.units[i];
     if (!p.cansee(u)) {
       continue;
     }
@@ -222,51 +221,44 @@ void reportunitsummary(Player p, Player p2) {
     return;
   }
 
-  write("Unit summary: ");
+  write('Unit summary: ');
   writeline(p2.nameid);
-  writeline("  number  type        x   y  group");
-  writeline("  ------  ---------  --  --  -----");
+  writeline('  number  type        x   y  group');
+  writeline('  ------  ---------  --  --  -----');
 
   p2.units.each((u) {
     if (!p.cansee(u)) {
       return;
     }
-    int h = u._hex;
-    int x = htox(h);
-    int y = htoy(h);
+    final h = u._hex;
+    final x = htox(h);
+    final y = htoy(h);
 
     space(2);
     writew(u.id, 8);
     writew(Unittypes[u.type].name, 9);
     right(x, 4);
     right(y, 4);
-    write("  none");
+    write('  none');
     newline();
   });
 
-  writeline("  ------  ---------  --  --  -----");
+  writeline('  ------  ---------  --  --  -----');
   newline();
 }
 
-
 void reportunitdetails(Player p) {
-  underline("Unit details");
+  underline('Unit details');
 
-  int i = 0;
-  int j = 0;
+  var i = 0;
+  var j = 0;
   while (i < p.units.length || j < p.removedunits.length) {
-    Unit ui = null;
-    if (i < p.units.length) {
-      ui = p.units[i];
-    }
-    Unit uj = null;
-    if (j < p.removedunits.length) {
-      uj = p.removedunits[j];
-    }
+    final ui = i < p.units.length ? p.units[i] : null;
+    final uj = j < p.removedunits.length ? p.removedunits[j] : null;
 
     Unit u;
     if (ui == null) {
-      u = uj;
+      u = uj!;
       j++;
     } else if (uj == null) {
       u = ui;
@@ -286,9 +278,9 @@ void reportunitdetails(Player p) {
       continue;
     }
 
-    item("Type", 12, Unittypes[u.type].name.toUpperCase());
-    item("Location", 12, u.hex().nameid);
-    item("Grouped with", 12, "None");
+    item('Type', 12, Unittypes[u.type].name.toUpperCase());
+    item('Location', 12, u.hex().nameid);
+    item('Grouped with', 12, 'None');
     newline();
   }
 }
@@ -298,45 +290,43 @@ void reporthexsummary(Player p) {
     return;
   }
 
-  writeline("Hex summary");
-  writeline("   x   y  terrain   city");
-  writeline("  --  --  --------  ----");
+  writeline('Hex summary');
+  writeline('   x   y  terrain   city');
+  writeline('  --  --  --------  ----');
 
-  for (int y = 0; y < $mapsizey; y++) {
-    for (int x = 0; x < $mapsizex; x++)
-    {
-      int h = xytoh(x, y);
-      Hex hex = $hexes[h];
+  for (var y = 0; y < $mapsizey; y++) {
+    for (var x = 0; x < $mapsizex; x++) {
+      final h = xytoh(x, y);
+      final hex = $hexes[h];
       if (!p.cansee(hex)) {
         continue;
       }
-      int t = hex.terrain;
+      final t = hex.terrain;
 
       right(x, 4);
       right(y, 4);
       space(2);
       writew(Terrains[t].name, 10);
-      if (t == 0)
-      {
-        writeline("n/a");
+      if (t == 0) {
+        writeline('n/a');
         continue;
       }
       if (cityarea(hex)) {
-        writeline("yes");
+        writeline('yes');
       } else {
-        writeline("no");
+        writeline('no');
       }
     }
   }
 
-  writeline("  --  --  --------  ----");
+  writeline('  --  --  --------  ----');
   newline();
 }
 
 void _reporthexdetails(Player p, Hex hex) {
-  bool found = false;
-  for (int i = 0; i < hex.events.length; i++) {
-    Hexevent he = hex.events[i];
+  var found = false;
+  for (var i = 0; i < hex.events.length; i++) {
+    final he = hex.events[i];
     if (he.players.contains(p)) {
       found = true;
       break;
@@ -344,8 +334,8 @@ void _reporthexdetails(Player p, Hex hex) {
   }
 
   if (p.cansee(hex)) {
-    for (int i = 0; i < $units.length; i++) {
-      Unit u = $units[i];
+    for (var i = 0; i < $units.length; i++) {
+      final u = $units[i];
       if (u.hex() == hex) {
         found = true;
         break;
@@ -360,8 +350,8 @@ void _reporthexdetails(Player p, Hex hex) {
   writeline(hex.nameid);
 
   found = false;
-  for (int i = 0; i < hex.events.length; i++) {
-    Hexevent he = hex.events[i];
+  for (var i = 0; i < hex.events.length; i++) {
+    final he = hex.events[i];
     if (he.players.contains(p)) {
       reportevent(he.event);
       found = true;
@@ -384,9 +374,9 @@ void _reporthexdetails(Player p, Hex hex) {
 
       space(2);
       if (p2 == p) {
-        write("* ");
+        write('* ');
       } else {
-        write("- ");
+        write('- ');
       }
       writeline(u.namepidtype());
 
@@ -399,28 +389,28 @@ void _reporthexdetails(Player p, Hex hex) {
 
   String s;
   if (cityarea(hex)) {
-    s = "Yes";
+    s = 'Yes';
   } else {
-    s = "No";
+    s = 'No';
   }
   if (hex.terrain == 0) {
-    s = "N/A";
+    s = 'N/A';
   }
-  item("City area", 9, s);
+  item('City area', 9, s);
   newline();
 }
 
 void reporthexdetails(Player p) {
-  underline("Hex details");
+  underline('Hex details');
 
   $hexes.each((h) => _reporthexdetails(p, h));
 }
 
 void templateitem(String caption, int n, String co) {
   write(caption);
-  write(" ");
+  write(' ');
   write(n);
-  write("  # ");
+  write('  # ');
   writeline(co);
   newline();
 }
@@ -430,19 +420,19 @@ void reporttemplate(Player p) {
     return;
   }
 
-  underline("Order template");
+  underline('Order template');
 
-  templateitem("player", p.id, p.name);
+  templateitem('player', p.id, p.name);
   p.units.each((u) {
-    templateitem("unit", u.id, "${u.name} in ${u.hex().nameid}");
+    templateitem('unit', u.id, '${u.name} in ${u.hex().nameid}');
   });
-  writeline("end");
+  writeline('end');
 }
 
 void report(Player p) {
-  file = File.open("${p.id}.txt", "w");
+  file = File.open('${p.id}.txt', 'w');
   if (file == null) {
-    throw("Unable to create report file");
+    throw ('Unable to create report file');
   }
 
   reportheader(p);
@@ -456,17 +446,17 @@ void report(Player p) {
   reporthexdetails(p);
   reporttemplate(p);
   if (p.units.isEmpty) {
-    write("Unfortunately your empire has been eliminated from the game.\n"
-      "Hope you enjoyed playing; condolences on your ill fortune,\n"
-      "and better luck next time.\n");
+    write('Unfortunately your empire has been eliminated from the game.\n'
+        'Hope you enjoyed playing; condolences on your ill fortune,\n'
+        'and better luck next time.\n');
   }
-  file.close();
+  file!.close();
 }
 
 void writereports() {
-  var players = $players.dup();
+  final players = $players.dup();
   players.sort((Player p1, Player p2) {
-    int n = p2.units.length - p1.units.length;
+    var n = p2.units.length - p1.units.length;
     if (n != 0) {
       return n;
     }
