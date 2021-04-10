@@ -156,14 +156,14 @@ class Array<E> /*implements Iterable<E>*/ {
     if (_elements.isEmpty) {
       return null;
     }
-    int e = _elements[0];
+    Comparable e = _elements[0] as Comparable;
     for (int i = 1; i < _elements.length; i++) {
-      int f = _elements[i];
-      if (f > e) {
+      Comparable f = _elements[i] as Comparable;
+      if (f.compareTo(e) > 0) {
         e = f;
       }
     }
-    return e;
+    return e as E;
   }
 
   void clear() {
