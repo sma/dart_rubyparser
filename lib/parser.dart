@@ -747,11 +747,6 @@ class Parser extends Scanner {
    * Used to distinguish local variable access from implicit method calls without parentheses.
    */
   bool isLocal(String name) {
-    for (var i = locals.length - 1; i >= 0; --i) {
-      if (locals[i].contains(name)) {
-        return true;
-      }
-    }
-    return false;
+    return locals.reversed.any((names) => names.contains(name));
   }
 }
