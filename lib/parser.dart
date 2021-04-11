@@ -344,8 +344,10 @@ class Parser extends Scanner {
    *  - bit shifting <<
    *  - addition and subtraction
    *  - multiplication, division and modulo
-   *  - unary operators
-   *  -
+   *  - unary operators -, !, *
+   *  - index access `[]`
+   *  - ::name or .name
+   *  - method and function calls
    */
   AST parseSimpleExpr() {
     var expr = parseRange();
@@ -472,7 +474,7 @@ class Parser extends Scanner {
    * Parses a function application, an index operation, a dereference operation, a `::`,
    * or a do/end or {} block. The method tries to detect whether the application has omitted
    * the parenthesis.
-   * Returns a [[]], [::], [mcall], or some other expression node.
+   * Returns a `[]`, `::`, `mcall`, or some other expression node.
    */
   AST parsePostfix(AST expr) {
     while (true) {
@@ -544,7 +546,7 @@ class Parser extends Scanner {
 
   /**
    * Parses a `do/end` or `{...}` block.
-   * Returns a [doblock] node.
+   * Returns a `doblock` node.
    */
   AST parseDoBlock(AST expr, String token) {
     if (expr.type != 'mcall') {
@@ -584,8 +586,8 @@ class Parser extends Scanner {
    * Parses a constant like nil, true, or false, a pseudo variable like self or super,
    * an array constructor, a number, a string, or regular expression, an instance variable,
    * a global variable or a local variable (which might actually be an implicit method call).
-   * Returns a [lit], [relit], [self], [array], [return], [const], [symbol],
-   * [var], [instvar], [globalvar], or some other expression node.
+   * Returns a `lit`, `relit`, `self`, `array`, `return`, `const`, `symbol`,
+   * `var`, `instvar`, `globalvar`, or some other expression node.
    */
   AST parsePrimary() {
     if (at('(')) {
@@ -672,7 +674,7 @@ class Parser extends Scanner {
 
   /**
    * Parses a non-empty parameter list.
-   * Returns a list of [param] or [restparam] nodes.
+   * Returns a list of `param` or `restparam` nodes.
    */
   List<AST> parseParamList() {
     final list = <AST>[];
@@ -685,7 +687,7 @@ class Parser extends Scanner {
 
   /**
    * Parses a parameter with an optional initializer or `*` indicating a rest parameter.
-   * Returns a [param] or [restparam] nodes.
+   * Returns a `param` or `restparam` nodes.
    */
   AST parseParam() {
     if (at('*')) {

@@ -12,3 +12,4 @@ linter:
   rules:
     slash_for_doc_comments: false
     prefer_final_locals: true
+    comment_references: true
