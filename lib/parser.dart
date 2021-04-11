@@ -11,6 +11,9 @@ class AST {
 
   String get name => map['name'] as String;
   set name(String name) => map['name'] = name;
+
+  @override
+  String toString() => '$map';
 }
 
 class Parser extends Scanner {
