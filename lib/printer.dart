@@ -64,13 +64,13 @@ Printer op(String op) {
 
 final rubyMethods = <String, Printer>{
   'assignment': (ast) {
-    for (AST target in ast['targetList']) {
+    for (final target in ast['targetList'] as List<AST>) {
       pp(target);
       emit(',');
     }
     line = line.substring(0, line.length - 1);
     emit(' = ');
-    for (AST expr in ast['exprList']) {
+    for (final expr in ast['exprList'] as List<AST>) {
       pp(expr);
       emit(',');
     }
