@@ -107,7 +107,7 @@ final rubyMethods = <String, Printer>{
     emit(ast.name);
   },
   'instvar': (ast) {
-    emit('@' + ast.name);
+    emit('@${ast.name}');
   },
   'const': (ast) {
     emit(ast.name);
@@ -336,7 +336,7 @@ final rubyMethods = <String, Printer>{
     pp(ast['expr']);
   },
   'symbol': (ast) {
-    emit(':' + ast.name);
+    emit(':${ast.name}');
   },
   'while': (ast) {
     emit('while ');
@@ -488,7 +488,7 @@ final dartMethods = <String, Printer>{
     emit(fixname(ast.name));
   },
   'instvar': (ast) {
-    emit('this.' + ast.name);
+    emit('this.${ast.name}');
   },
   'const': (ast) {
     emit(ast.name);

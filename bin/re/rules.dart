@@ -408,7 +408,6 @@ void captureunit(Unit c, Hex h) {
     removeunit(c);
     break;
   }
-  ;
 }
 
 void capturehex(Hex h) {

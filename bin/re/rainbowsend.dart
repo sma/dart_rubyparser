@@ -140,7 +140,7 @@ class Array<E> /*implements Iterable<E>*/ {
       final t = a[i];
       a[i] = a[j];
       a[j] = t;
-    };
+    }
     return Array.from(a);
   }
 

@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
   strong-mode:
@@ -11,5 +11,5 @@ analyzer:
 linter:
   rules:
     slash_for_doc_comments: false
-    prefer_final_locals: true
-    comment_references: true
+    constant_identifier_names: false
+    non_constant_identifier_names: false

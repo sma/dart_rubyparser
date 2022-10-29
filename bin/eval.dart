@@ -68,7 +68,7 @@ typedef Eval = dynamic Function(Scope, AST);
 
 final evalMethods = <String, Eval>{
   'block': (scope, ast) {
-    return _list(ast['list']).fold(null, (_, ast) => scope.eval(ast));
+    return _list(ast['list']).fold<Object?>(null, (_, ast) => scope.eval(ast));
   },
   'def': (scope, ast) {
     if (ast['classname'] != null) throw _unsupported;

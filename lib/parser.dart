@@ -296,7 +296,7 @@ class Parser extends Scanner {
         return AST({
           'type': 'mcall',
           'expr': expr['expr'],
-          'name': expr.name + '=',
+          'name': '${expr.name}=',
           'args': [
             AST({'type': '+', 'left': expr, 'right': parseExpr()}),
           ]
@@ -309,7 +309,7 @@ class Parser extends Scanner {
         return AST({
           'type': 'mcall',
           'expr': expr['expr'],
-          'name': expr.name + '=',
+          'name': '${expr.name}=',
           'args': <AST>[
             AST({'type': '-', 'left': expr, 'right': parseExpr()}),
           ]
