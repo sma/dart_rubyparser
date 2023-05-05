@@ -1,9 +1,10 @@
 include: package:lints/recommended.yaml
 
 analyzer:
-  strong-mode:
-    implicit-casts: true
-    implicit-dynamic: false
+  language:
+    strict-casts: false
+    strict-inference: true
+    strict-raw-types: true
   errors:
     todo: false
     implicit_dynamic_map_literal: false

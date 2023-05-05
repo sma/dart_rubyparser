@@ -1,11 +1,11 @@
 // Copyright 2013 by Stefan Matthias Aust
 part of rubyparser;
 
-class AST {
+final class AST {
   AST(this.map);
   final Map<String, dynamic> map;
   dynamic operator [](String key) => map[key];
-  operator []=(String key, Object? value) => map[key] = value;
+  void operator []=(String key, Object? value) => map[key] = value;
 
   String get type => map['type'] as String;
 
@@ -13,16 +13,16 @@ class AST {
   set name(String name) => map['name'] = name;
 
   @override
-  String toString() => '$map';
+  String toString() => '$type${Map.of(map)..remove('type')}';
 }
 
-class Parser extends Scanner {
+final class Parser extends Scanner {
   final locals = <Set<String>>[{}]; // tracks local variables
 
   /**
    * Constructs a new parser for the given [source] string.
    */
-  Parser(String source) : super(source);
+  Parser(super.source);
 
   /**
    * Parses the source and returns an AST node of type `block`.

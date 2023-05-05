@@ -16,7 +16,7 @@ class Scope {
   }
 
   /// Binds or rebinds a local value.
-  operator []=(String name, Object? value) {
+  void operator []=(String name, Object? value) {
     values[name] = value;
   }
 
@@ -34,20 +34,20 @@ class Scope {
 
 /// Implements a user-defined function.
 class Func {
-  Func(this.defining, this.params, this.body);
-  final Scope defining;
+  Func(this.definingScope, this.params, this.body);
+  final Scope definingScope;
   final List<AST> params;
   final AST body;
 
   Object? call(List<Object?> args) {
-    final scope = Scope(defining);
+    final scope = Scope(definingScope);
     for (var i = 0; i < params.length; i++) {
       if (params[i].type == 'restparam') throw _unsupported;
       if (i < args.length) {
         scope[params[i].name] = args[i];
       } else {
         final init = params[i]['init'] as AST?;
-        scope[params[i].name] = init == null ? null : defining.eval(init);
+        scope[params[i].name] = init == null ? null : definingScope.eval(init);
       }
     }
     try {

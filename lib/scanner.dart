@@ -1,7 +1,7 @@
 // Copyright 2013 by Stefan Matthias Aust
 part of rubyparser;
 
-class Scanner {
+base class Scanner {
   Scanner(String source) : matches = RegExp(re, multiLine: true).allMatches(source).iterator {
     current = next();
   }
