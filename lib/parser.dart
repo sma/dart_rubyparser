@@ -575,7 +575,7 @@ final class Parser extends Scanner {
     if (atEnd()) {
       return false;
     }
-    if (['nil', 'true', 'false', 'self', 'super', '['].contains(current)) {
+    if (const {'nil', 'true', 'false', 'self', 'super', '['}.contains(current)) {
       return true;
     }
     if (isKeyword()) {
