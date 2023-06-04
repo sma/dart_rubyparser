@@ -88,7 +88,7 @@ final evalMethods = <String, Eval>{
   'lit': (scope, ast) => ast['value'] as Object?,
   'if': (scope, ast) {
     final expr = scope.eval(ast['expr'] as AST) as bool;
-    return scope.eval(ast[expr ? 'then' : 'else'] ?? AST({'type': 'lit', 'value': null}));
+    return scope.eval(ast[expr ? 'then' : 'else'] ?? AST('lit', {'value': null}));
   },
   '<': (scope, ast) => _op<num>(scope, ast, (a, b) => a < b),
   '+': (scope, ast) => _op<num>(scope, ast, (a, b) => a + b),
