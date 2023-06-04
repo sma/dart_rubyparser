@@ -69,8 +69,10 @@ final class Parser extends Scanner {
   /**
    * Parses a single statement.
    *
-   * Supports module, class, def, if/elsif/else, while, break, next, return, alias, for/in, case/when/else,
-   * begin/end, begin/end while, begin/end until, alias, attr_reader, attr_accessor and assignments.
+   * Supports `module`, `class`, `def`, `if/elsif/else`, `while`, `break`, 
+   * `next`, `return`, `for/in`, `case/when/else`, `alias`, `begin/end`, 
+   * `begin/end while`, `begin/end until`, `attr_reader`, `attr_accessor`
+   * and assignments.
    *
    * TODO: rescue and ensure inside of begin/end aren't correctly recognized.
    */
@@ -245,9 +247,9 @@ final class Parser extends Scanner {
   }
 
   /**
-   * Parses a simple expression, followed by an optional assignment or += or -= operator.
-   * Also supports mass assignments. It collects all expressions separated by `,` into
-   * a single list expression.
+   * Parses a simple expression, followed by an optional `=` assignment or
+   * `+=` or `-=` operator. Also supports mass assignments. It collects all 
+   * expressions separated by `,` into a single list expression.
    */
   AST parseAssignment() {
     var expr = parseSimpleExpr();
@@ -342,15 +344,15 @@ final class Parser extends Scanner {
    *  - range `..`, `...`
    *  - logical OR `||`
    *  - logical AND `&&`
-   *  - equality, comparison and pattern matching ==, !=, <=>, ===, ~=
-   *  - comparisons <, <=, >, >=
-   *  - bit shifting <<
-   *  - addition and subtraction
-   *  - multiplication, division and modulo
-   *  - unary operators -, !, *
+   *  - equality, comparison and pattern matching `==`, `!=`, `<=>`, `===`, `=~`
+   *  - comparisons `<`, `<=`, `>`, `>=`
+   *  - bit shifting `<<`
+   *  - addition `+` and subtraction `-`
+   *  - multiplication `*`, division `/` and modulo `%`
+   *  - unary operators `-`, `!`, `*`
    *  - index access `[]`
-   *  - ::name or .name
-   *  - method and function calls
+   *  - `::`name or `.`name
+   *  - method and function calls (`mcall`)
    */
   AST parseSimpleExpr() {
     var expr = parseRange();
@@ -474,9 +476,9 @@ final class Parser extends Scanner {
   }
 
   /**
-   * Parses a function application, an index operation, a dereference operation, a `::`,
-   * or a do/end or {} block. The method tries to detect whether the application has omitted
-   * the parenthesis.
+   * Parses a function application, an index operation, a dereference 
+   * operation, a `::`, or a `do/end` or `{}` block. The method tries to 
+   * detect whether the application has omitted the parenthesis.
    * Returns a `[]`, `::`, `mcall`, or some other expression node.
    */
   AST parsePostfix(AST expr) {
@@ -548,8 +550,8 @@ final class Parser extends Scanner {
   }
 
   /**
-   * Parses a `do/end` or `{...}` block.
-   * Returns a `doblock` node.
+   * Parses a `do/end` or `{...}` block, based on [token].
+   * Returns [expr] with an additional `doblock` node.
    */
   AST parseDoBlock(AST expr, String token) {
     if (expr.type != 'mcall') {
@@ -586,9 +588,10 @@ final class Parser extends Scanner {
   }
 
   /**
-   * Parses a constant like nil, true, or false, a pseudo variable like self or super,
-   * an array constructor, a number, a string, or regular expression, an instance variable,
-   * a global variable or a local variable (which might actually be an implicit method call).
+   * Parses a constant like `nil`, `true`, or `false`, a pseudo variable 
+   * like `self` or `super`, an array constructor, a number, a string, or a
+   * regular expression, an instance variable, a global variable or a local
+   * variable (which might actually be an implicit method call).
    * Returns a `lit`, `relit`, `self`, `array`, `return`, `const`, `symbol`,
    * `var`, `instvar`, `globalvar`, or some other expression node.
    */
