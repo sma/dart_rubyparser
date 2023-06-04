@@ -2,10 +2,9 @@
 part of rubyparser;
 
 final class AST {
-  AST(this.map);
+  const AST(this.map);
   final Map<String, dynamic> map;
   dynamic operator [](String key) => map[key];
-  void operator []=(String key, Object? value) => map[key] = value;
 
   String get type => map['type'] as String;
 
@@ -565,9 +564,7 @@ final class Parser extends Scanner {
     } else {
       params = [];
     }
-    expr['doblock'] = AST({'type': 'doblock', 'params': params, 'block': parseBlock(token)});
-    locals.removeLast();
-    return expr;
+    return AST({...expr.map, 'doblock': AST({'type': 'doblock', 'params': params, 'block': parseBlock(token)})});
   }
 
   /**
