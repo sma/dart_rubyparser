@@ -7,7 +7,6 @@ analyzer:
     strict-raw-types: true
   errors:
     todo: false
-    implicit_dynamic_map_literal: false
 
 linter:
   rules:
