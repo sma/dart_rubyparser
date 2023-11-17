@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 int $turn = 0;
 int $slot = 0;

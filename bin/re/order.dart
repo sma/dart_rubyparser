@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 class Order {
   static final Array<String> Ordertypes = Array.from([

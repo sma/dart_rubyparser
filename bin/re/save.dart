@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 class Save {
   static File? file;

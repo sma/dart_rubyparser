@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 var $moneythreshold = Unittypes.collect((ut) => ut.buildcost).max();
 

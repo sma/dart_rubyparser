@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 class Unittype {
   String name;
@@ -23,12 +23,11 @@ class Unit extends Entity {
   int movement, special;
   bool removed;
 
-  Unit(int id, String name, this.type, this.player, int hex)
+  Unit(super.id, super.name, this.type, this.player, int hex)
       : _hex = hex,
         movement = 0,
         special = 0,
-        removed = false,
-        super(id, name);
+        removed = false;
 
   bool isCity() => (type == City);
   bool isRuin() => (type == Ruins);

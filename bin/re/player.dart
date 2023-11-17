@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 class Player extends Entity implements Comparable<Player> {
   String? email;

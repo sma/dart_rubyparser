@@ -1,5 +1,5 @@
 // Copyright 2013 by Stefan Matthias Aust
-part of rubyparser;
+part of 'rubyparser.dart';
 
 final class AST {
   const AST(this.type, this.map);

@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 class Terrain {
   static final Array<String> Terraintypes = Array.from(['water', 'plain', 'forest', 'mountain']);

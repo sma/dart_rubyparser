@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 String A(List<String> args, int index, String def) {
   return index < args.length ? args[index] : def;

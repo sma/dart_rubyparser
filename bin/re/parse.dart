@@ -1,4 +1,4 @@
-part of rainbowsend;
+part of 'rainbowsend.dart';
 
 Array<String> parse(String line) {
   final a = Array<String>();
